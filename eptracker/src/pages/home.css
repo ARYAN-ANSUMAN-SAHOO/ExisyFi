@@ -1,0 +1,655 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: black;
+  color: white;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* PAGE */
+.page {
+  /* max-width: 1300px; */
+  margin: auto;
+  padding: 40px;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+}
+
+.logo-ring {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #a855f7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-dot {
+  width: 10px;
+  height: 10px;
+  background: #a855f7;
+  border-radius: 50%;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #aaa;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.nav-links a:hover {
+  color: white;
+  transition: 0.3s;
+}
+
+.login-btn {
+  background: none;
+  color: white;
+  border: 1px solid #444;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: white;
+  color: black;
+  transition: 0.3s;
+}
+
+main {
+  text-align: left;
+}
+
+/* HERO */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  margin-top: 60px;
+}
+
+/* TEXT */
+.hero-text h1 {
+  font-size: 48px;
+  line-height: 1.2;
+
+}
+
+.hero-text p {
+  margin: 20px 0 40px 0;
+  color: #aaa;
+  max-width: 420px;
+}
+
+.gradient-text {
+  font-size: 64px;
+  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.primary-btn {
+  padding: 14px 34px;
+  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  border: none;
+  border-radius: 8px;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: medium;
+}
+
+.primary-btn:hover {
+
+  transform: scale(1.05);
+  opacity: 0.9;
+  transition: 0.3s ease;
+  box-shadow: 0 0 10px #a855f7;
+}
+
+/* CARDS */
+.hero-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 20px;
+  position: relative;
+  min-height: 180px;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.card:hover {
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
+
+
+.small-card {
+  min-height: 160px;
+}
+
+.wide-card {
+  grid-column: span 2;
+  min-height: 200px;
+}
+
+.widde-card :hover {
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
+
+/* CIRCLE */
+.circle-feature {
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  position: relative;
+}
+
+
+.circle-feature.small {
+  width: 90px;
+  height: 90px;
+}
+
+.circle-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #a855f7;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #a855f7;
+}
+
+/* GRAPH */
+.graph-line {
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+/* TEXT HELPERS */
+.muted {
+  color: #888;
+}
+
+.corner-text {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 300px;
+  background-color: #000;
+  color: #fff;
+  padding: 40px 80px 20px;
+  font-size: 14px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  flex-direction: column;
+  text-align: center;
+}
+
+.footer h4 {
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.trusted-brands {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.brand-text {
+  color: #aaa;
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: uppercase;
+  /* Making them look more like logos */
+  letter-spacing: 1px;
+  cursor: default;
+  transition: 0.3s;
+}
+
+.brand-text:hover {
+  color: white;
+}
+
+.footer-right .social-links {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.footer-right a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-right a:hover {
+  color: #a855f7;
+}
+
+.footer-bottom {
+  border-top: 1px solid #222;
+  margin-top: 30px;
+  padding-top: 15px;
+  text-align: center;
+  color: #777;
+  font-size: 12px;
+}
+
+
+/* About us */
+/* .about-section {
+  margin: 100px 0;
+  background: #000000;
+  color: #ffffff;
+  padding: 100px 80px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.about-section h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.about-description {
+  color: #939393;
+  max-width: 700px;
+  margin-bottom: 60px;
+  line-height: 1.7;
+  justify-content: center;
+}
+.about-description p {
+  margin-bottom: 15px;
+  text-align: center;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.about-card {
+  background: #070707;
+  padding: 30px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+
+.about-card h3 {
+  margin-bottom: 15px;
+}
+
+.about-card p {
+  font-size: 14px;
+  color: #cfcfcf;
+}
+
+.social-links a {
+  margin-right: 15px;
+  color: #cfcfcf;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  color: #ffffff;
+} */
+
+/* GLASS CARD CORE */
+.glass-card {
+  margin-bottom: 20px;
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 24px;
+  transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateY(-5px);
+}
+
+/* DONUT CHART SIMULATION */
+.donut-container {
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Donut ring */
+/* Allow animation of CSS variables */
+@property --p1 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --p2 {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+.donut-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+
+  --p1: 0%;
+  --p2: 0%;
+
+  background: conic-gradient(#a855f7 0% var(--p1),
+      #7e22ce var(--p1) var(--p2),
+      #0ea5e9 var(--p2) 100%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  animation: donutFill 1.6s ease-out forwards;
+}
+
+@keyframes donutFill {
+  0% {
+    --p1: 0%;
+    --p2: 0%;
+  }
+
+  60% {
+    --p1: 38%;
+    --p2: 38%;
+  }
+
+  100% {
+    --p1: 38%;
+    --p2: 60%;
+  }
+}
+
+
+.donut-center {
+  width: 80px;
+  height: 80px;
+  background: #0a0a0a;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center .amount {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.donut-center .label {
+  font-size: 10px;
+  color: #666;
+}
+
+/* BAR CHART SIMULATION */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 120px;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.bar {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  position: relative;
+  min-width: 30px;
+}
+
+.bar.active {
+  background: linear-gradient(to top, #0ea5e9, #a855f7);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.bar span {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: #888;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .wide-card {
+    grid-column: span 1;
+  }
+
+
+}
+
+/* page animatoins */
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.page {
+  animation: pageFade 0.8s ease-out forwards;
+}
+
+/* navbar animate */
+@keyframes navSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar {
+  animation: navSlide 0.7s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-text h1 {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.hero-text p {
+  animation: fadeUp 0.6s ease-out forwards;
+  animation-delay: 0.15s;
+  opacity: 0;
+}
+
+.primary-btn {
+  animation: fadeUp 0.6s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+/* barchart animation */
+@keyframes barGrow {
+  from {
+    height: 0;
+  }
+
+  to {
+    height: var(height);
+  }
+}
+
+.bar {
+  animation: barGrow 0.8s ease-out forwards;
+  transform-origin: bottom;
+}
+
+/* donut chart animation */
+/* @keyframes donutIn {
+  from {
+    transform: rotate(-90deg) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+.donut-ring {
+  animation: donutIn 0.9s ease-out forwards;
+}
+ */
+
+/* fixing the resize issue */
+.hero-text h1,
+.hero-text p,
+.primary-btn {
+  opacity: 0;
+  will-change: transform, opacity;
+
+}
+
+/* rotating text */
+/* ROTATING TEXT */
+.rotating-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+}
+
+.rotating-text {
+  width: 100%;
+  height: 100%;
+  animation: spin 10s linear infinite;
+}
+
+.star-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  color: #a855f7;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating-container {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+
+}
