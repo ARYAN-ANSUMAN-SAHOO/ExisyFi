@@ -19,16 +19,29 @@ const LoginPage = () => {
         return tempErrors;
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const validationErrors = validate();
         if (Object.keys(validationErrors).length === 0) {
-            // Hardcoded authentication logic
-            // For demonstration: UserID 'admin', Password '1234'
-            if (userId === 'admin' && password === '1234') {
-                navigate('/dashboard');
-            } else {
-                setLoginError('Invalid User ID or Password. Try admin/1234');
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Safe industrial practice: Save JWT token tightly to local storage for subsequent authenticated requests
+                    localStorage.setItem('token', data.token);
+                    navigate('/dashboard');
+                } else {
+                    setLoginError(data.message || 'Login failed. Please verify your credentials.');
+                }
+            } catch (err) {
+                console.error("Login fetch error:", err);
+                setLoginError('Server is unreachable. Please try again later.');
             }
         } else {
             setErrors(validationErrors);

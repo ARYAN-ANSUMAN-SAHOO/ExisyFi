@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TransactionContext } from '../context/TransactionContext';
 import './dashboard.css';
 
 // SVG Icons
@@ -14,17 +13,149 @@ const Icons = {
     Target: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>,
     Share: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>,
     Bell: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>,
-    Plus: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Plus: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+    LogOut: () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
+    // #1 Default Profile Picture SVG
+    ProfilePic: () => <svg viewBox="0 0 24 24" width="28" height="28" fill="#888"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
 };
+
+// Navigation pages for the search index
+const NAV_PAGES = [
+    { label: 'Record Expense', path: '/record-expense' },
+    { label: 'Set Budget Goal', path: '/set-budget' },
+    { label: 'Split Transaction', path: '/split-transaction' },
+    { label: 'Financial Report', path: '/financial-report' },
+    { label: 'Notifications', path: '/notifications' },
+    { label: 'Categorize Income', path: '/categorize-income' },
+    { label: 'Contact Us', path: '/contact-us' },
+];
 
 const DashboardPage = () => {
     const navigate = useNavigate();
-    const { transactions } = useContext(TransactionContext);
+    const [transactions, setTransactions] = useState([]);
+    const [user, setUser] = useState(null);
 
-    // Calculate totals
-    const totalExpense = transactions.reduce((sum, t) => sum + t.amount, 0);
-    const totalIncome = 45000; // Hardcoded for demo
+    // #2 Savings Modal State
+    const [showSavingsModal, setShowSavingsModal] = useState(false);
+    // #6 Search Bar State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showSearchResults, setShowSearchResults] = useState(false);
+    const searchRef = useRef(null);
+    // #7 Settings Modal State
+    const [showSettingsModal, setShowSettingsModal] = useState(false);
+    const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'USD');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        const fetchData = async () => {
+            try {
+                const userRes = await fetch('http://localhost:5000/api/auth/me', {
+                    headers: { 'x-auth-token': token }
+                });
+                if (userRes.ok) {
+                    setUser(await userRes.json());
+                } else {
+                    navigate('/login');
+                }
+
+                const txRes = await fetch('http://localhost:5000/api/transactions', {
+                    headers: { 'x-auth-token': token }
+                });
+                if (txRes.ok) {
+                    setTransactions(await txRes.json());
+                }
+            } catch (err) {
+                console.error("Dashboard fetch error:", err);
+            }
+        };
+
+        fetchData();
+    }, [navigate]);
+
+    // Close search when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setShowSearchResults(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
+
+    // Core financial calculations
+    const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+    const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
     const totalSavings = totalIncome - totalExpense;
+
+    // #4 Percentage formulas (Income = 100% baseline)
+    const expensePercent = totalIncome > 0 ? ((totalExpense / totalIncome) * 100).toFixed(1) : '0.0';
+    const savingsPercent = totalIncome > 0 ? ((totalSavings / totalIncome) * 100).toFixed(1) : '0.0';
+
+    // Aggregate category data for charts
+    const categoryTotals = {};
+    transactions.filter(t => t.type === 'expense').forEach(t => {
+        categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+    });
+
+    const topExpenses = Object.entries(categoryTotals)
+        .map(([label, val]) => ({ label, val }))
+        .sort((a, b) => b.val - a.val)
+        .slice(0, 10);
+
+    const maxVal = Math.max(...topExpenses.map(e => e.val), 1);
+
+    // #3 Dynamic Pie Chart conic-gradient calculation
+    const pieTotal = totalIncome + totalExpense + Math.abs(totalSavings);
+    const incomeSlice = pieTotal > 0 ? (totalIncome / pieTotal) * 100 : 33;
+    const expenseSlice = pieTotal > 0 ? (totalExpense / pieTotal) * 100 : 33;
+
+    // #3 Dynamic Line Chart — group expenses by month
+    const monthlyExpenses = Array(12).fill(0);
+    transactions.filter(t => t.type === 'expense').forEach(t => {
+        const month = new Date(t.date).getMonth();
+        monthlyExpenses[month] += t.amount;
+    });
+    const maxMonthly = Math.max(...monthlyExpenses, 1);
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const linePoints = monthlyExpenses.map((val, i) => {
+        const x = (i / 11) * 480 + 10;
+        const y = 130 - (val / maxMonthly) * 120;
+        return x + ',' + y;
+    }).join(' ');
+
+    // #2 Savings breakdown data for the modal
+    const savingsBreakdown = Object.entries(categoryTotals)
+        .map(([cat, spent]) => ({ category: cat, spent, saved: totalIncome > 0 ? totalIncome - spent : 0 }))
+        .sort((a, b) => b.spent - a.spent);
+
+    // #6 Search results filtering
+    const getSearchResults = () => {
+        if (!searchQuery.trim()) return [];
+        const q = searchQuery.toLowerCase();
+        const pageResults = NAV_PAGES.filter(p => p.label.toLowerCase().includes(q)).map(p => ({ type: 'page', ...p }));
+        const txResults = transactions.filter(t =>
+            (t.category && t.category.toLowerCase().includes(q)) ||
+            (t.merchant && t.merchant.toLowerCase().includes(q)) ||
+            (t.description && t.description.toLowerCase().includes(q))
+        ).slice(0, 5).map(t => ({ type: 'transaction', label: t.merchant || t.category || t.description, amount: t.amount, txType: t.type }));
+        return [...pageResults, ...txResults];
+    };
+
+    const searchResults = getSearchResults();
+
+    // Currency symbol helper
+    const currSymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₹';
 
     return (
         <div className="dashboard-container">
@@ -61,99 +192,139 @@ const DashboardPage = () => {
                 </nav>
 
                 <div className="nav-menu" style={{ flex: '0', marginTop: 'auto' }}>
-                    <a href="#settings" className="nav-item"><Icons.Settings /> Settings</a>
-                    <a href="#help" className="nav-item"><Icons.User /> Help</a>
+                    {/* #7 Settings opens modal */}
+                    <a onClick={() => setShowSettingsModal(true)} className="nav-item" style={{ cursor: 'pointer' }}>
+                        <Icons.Settings /> Settings
+                    </a>
+                    {/* #5 Help redirects to Contact Us */}
+                    <a onClick={() => navigate('/contact-us')} className="nav-item" style={{ cursor: 'pointer' }}>
+                        <Icons.User /> Help
+                    </a>
                 </div>
 
+                {/* #1 Profile with default SVG avatar */}
                 <div className="user-profile">
-                    <div className="avatar"></div>
+                    <div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a', border: '2px solid #333' }}>
+                        <Icons.ProfilePic />
+                    </div>
                     <div className="user-info">
-                        <span className="name">Chris Flores</span>
-                        <span className="email">felicia.reid@exple.com</span>
+                        <span className="name">{user ? user.firstName + ' ' + user.lastName : 'Loading...'}</span>
+                        <span className="email">{user ? user.email : '...'}</span>
                     </div>
                 </div>
             </aside>
 
             {/* Main Content */}
             <main className="main-content">
-                <header className="top-bar">
-                    <div className="search-bar">
-                        <Icons.Search />
-                        <span>Search for...</span>
+                <header className="top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* #6 Live Search Bar */}
+                    <div ref={searchRef} style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                        <div className="search-bar" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <Icons.Search />
+                            <input
+                                type="text"
+                                placeholder="Search pages or transactions..."
+                                value={searchQuery}
+                                onChange={(e) => { setSearchQuery(e.target.value); setShowSearchResults(true); }}
+                                onFocus={() => setShowSearchResults(true)}
+                                style={{ background: 'transparent', border: 'none', outline: 'none', color: 'white', width: '100%', fontSize: '14px' }}
+                            />
+                        </div>
+                        {showSearchResults && searchResults.length > 0 && (
+                            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px', background: '#111', border: '1px solid #333', borderRadius: '12px', overflow: 'hidden', zIndex: 100, maxHeight: '300px', overflowY: 'auto' }}>
+                                {searchResults.map((r, i) => (
+                                    <div
+                                        key={i}
+                                        onClick={() => {
+                                            if (r.type === 'page') navigate(r.path);
+                                            setShowSearchResults(false);
+                                            setSearchQuery('');
+                                        }}
+                                        style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        <div>
+                                            <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>{r.label}</div>
+                                            <div style={{ fontSize: '11px', color: '#888' }}>{r.type === 'page' ? 'Navigate' : r.txType}</div>
+                                        </div>
+                                        {r.type === 'transaction' && (
+                                            <span style={{ color: r.txType === 'income' ? '#22c55e' : '#ef4444', fontWeight: 'bold', fontSize: '13px' }}>
+                                                {r.txType === 'income' ? '+' : '-'}{currSymbol}{r.amount}
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
+                    <button onClick={handleLogout} className="primary-btn" style={{ padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', background: '#ef4444' }}>
+                        <Icons.LogOut /> Logout
+                    </button>
                 </header>
 
-                {/* Stats Row */}
+                {/* Stats Row — #4 Percentage Indicators */}
                 <div className="stats-grid">
                     <div className="stat-card">
                         <div className="stat-header">
-                            <div className="icon-box">
-                                $
-                            </div>
+                            <div className="icon-box">{currSymbol}</div>
                             <span className="menu-dots">...</span>
                         </div>
                         <div className="stat-label" style={{ color: '#888', fontSize: '12px' }}>TOTAL INCOME</div>
-                        <div className="stat-value">${totalIncome.toLocaleString()}</div>
-                        <div className="stat-change up">↗ 6% vs last 30 days</div>
+                        <div className="stat-value">{currSymbol}{totalIncome.toLocaleString()}</div>
+                        <div className="stat-change up">↗ 100% (Baseline)</div>
                     </div>
 
                     <div className="stat-card accent">
                         <div className="stat-header">
-                            <div className="icon-box">
-                                <Icons.Wallet />
-                            </div>
+                            <div className="icon-box"><Icons.Wallet /></div>
                             <span className="menu-dots">...</span>
                         </div>
                         <div className="stat-label">TOTAL EXPENSE</div>
-                        <div className="stat-value">${totalExpense.toLocaleString()}</div>
-                        <div className="stat-change">↘ 2% vs last 30 days</div>
+                        <div className="stat-value">{currSymbol}{totalExpense.toLocaleString()}</div>
+                        <div className="stat-change down">↘ {expensePercent}% of income</div>
                     </div>
 
                     <div className="stat-card">
                         <div className="stat-header">
-                            <div className="icon-box">
-                                <Icons.Chart />
-                            </div>
-                            <button style={{ background: '#1a1a1a', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '10px' }}>View Details</button>
+                            <div className="icon-box"><Icons.Chart /></div>
+                            {/* #2 View Details triggers the savings modal */}
+                            <button
+                                onClick={() => setShowSavingsModal(true)}
+                                style={{ background: '#1a1a1a', border: '1px solid #333', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer' }}
+                            >
+                                View Details
+                            </button>
                         </div>
                         <div className="stat-label" style={{ color: '#888', fontSize: '12px' }}>TOTAL SAVINGS</div>
-                        <div className="stat-value">${totalSavings.toLocaleString()}</div>
-                        <div className="stat-change down">↘ 1% vs last 30 days</div>
+                        <div className="stat-value" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
+                        <div className="stat-change" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{totalSavings >= 0 ? '↗' : '↘'} {savingsPercent}% saved</div>
                     </div>
                 </div>
 
-                {/* Chart Section */}
+                {/* Chart Section — #3 Dynamic Data */}
                 <div className="chart-section" style={{ marginBottom: '30px' }}>
                     <div className="dashboard-card">
                         <div className="card-header">
-                            <h3 className="card-title">Top 5 Expense Source</h3>
+                            <h3 className="card-title">Top Expense Sources</h3>
                             <span style={{ color: '#666' }}>...</span>
                         </div>
                         <div className="bar-chart-container">
-                            {[
-                                { label: 'Repairs', h: '40%' },
-                                { label: 'House Rent', h: '85%', active: true, val: '$3519' },
-                                { label: 'Licenses', h: '55%' },
-                                { label: 'Transport', h: '25%' },
-                                { label: 'Laptop', h: '60%' },
-                                { label: 'Net Bill', h: '45%' },
-                                { label: 'AC', h: '20%' },
-                                { label: 'Dish Bill', h: '50%' },
-                                { label: 'School', h: '30%' },
-                                { label: 'Plants', h: '20%' },
-                            ].map((item, i) => (
+                            {topExpenses.length > 0 ? topExpenses.map((item, i) => (
                                 <div className="bar-group" key={i}>
-                                    <div className={`bar ${item.active ? 'highlight' : ''}`} style={{ height: item.h, opacity: item.active ? 1 : 0.6 }}>
-                                        {item.active && <div className="bar-value-pop">{item.val}</div>}
+                                    <div className="bar highlight" style={{ height: (item.val / maxVal) * 100 + '%', opacity: 1 }}>
+                                        <div className="bar-value-pop">{currSymbol}{item.val}</div>
                                     </div>
                                     <span className="bar-label">{item.label}</span>
                                 </div>
-                            ))}
+                            )) : (
+                                <div style={{ color: '#666', padding: '20px' }}>No expense data recorded.</div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Row */}
+                {/* Bottom Row — #3 Dynamic Charts */}
                 <div className="bottom-row">
                     <div className="dashboard-card">
                         <div className="card-header">
@@ -161,21 +332,22 @@ const DashboardPage = () => {
                             <span style={{ color: '#666' }}>...</span>
                         </div>
                         <div className="pie-chart-wrapper">
-                            <div className="pie-chart">
+                            {/* #3 Dynamic conic-gradient pie */}
+                            <div className="pie-chart" style={{ background: 'conic-gradient(#a855f7 0% ' + incomeSlice + '%, #3b82f6 ' + incomeSlice + '% ' + (incomeSlice + expenseSlice) + '%, #1a1a1a ' + (incomeSlice + expenseSlice) + '% 100%)' }}>
                                 <div className="pie-hole"></div>
                             </div>
                             <div className="pie-legend">
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#a855f7' }}></div>
-                                    <span>Income ${totalIncome.toLocaleString()}</span>
+                                    <span>Income {currSymbol}{totalIncome.toLocaleString()}</span>
                                 </div>
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#3b82f6' }}></div>
-                                    <span>Expense ${totalExpense.toLocaleString()}</span>
+                                    <span>Expense {currSymbol}{totalExpense.toLocaleString()}</span>
                                 </div>
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#1a1a1a', border: '1px solid #333' }}></div>
-                                    <span>Savings ${totalSavings.toLocaleString()}</span>
+                                    <span>Savings {currSymbol}{totalSavings.toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>
@@ -184,38 +356,122 @@ const DashboardPage = () => {
                     <div className="dashboard-card">
                         <div className="card-header">
                             <h3 className="card-title">Expense Activity</h3>
-                            <div style={{ fontSize: '12px', color: '#3b82f6' }}>- Actual exp</div>
+                            <div style={{ fontSize: '12px', color: '#3b82f6' }}>— Monthly trend</div>
                         </div>
-                        {/* SVG Line Chart */}
+                        {/* #3 Dynamic SVG Line Chart from monthly expense data */}
                         <div style={{ height: '140px', width: '100%', position: 'relative' }}>
                             <svg viewBox="0 0 500 140" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-                                {/* Grid lines */}
                                 <line x1="0" y1="35" x2="500" y2="35" stroke="#222" strokeWidth="1" />
                                 <line x1="0" y1="70" x2="500" y2="70" stroke="#222" strokeWidth="1" />
                                 <line x1="0" y1="105" x2="500" y2="105" stroke="#222" strokeWidth="1" />
-
-                                {/* Path */}
-                                <polyline
-                                    points="0,110 50,100 100,90 150,95 200,80 250,90 300,70 350,75 400,110 450,100"
-                                    fill="none"
-                                    stroke="#3b82f6"
-                                    strokeWidth="2"
-                                />
-                                {/* Dots */}
-                                {[
-                                    [50, 100], [100, 90], [150, 95], [200, 80], [250, 90], [300, 70], [350, 75], [400, 110], [450, 100]
-                                ].map((p, i) => (
-                                    <circle cx={p[0]} cy={p[1]} r="3" fill="#000" stroke="#3b82f6" strokeWidth="2" key={i} />
-                                ))}
+                                {/* Dynamic polyline from actual monthly data */}
+                                <polyline points={linePoints} fill="none" stroke="#3b82f6" strokeWidth="2" />
+                                {/* Data point circles */}
+                                {monthlyExpenses.map((val, i) => {
+                                    const x = (i / 11) * 480 + 10;
+                                    const y = 130 - (val / maxMonthly) * 120;
+                                    return <circle key={i} cx={x} cy={y} r="3" fill="#3b82f6" />;
+                                })}
                             </svg>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666', fontSize: '10px', marginTop: '5px' }}>
-                                <span>Jan 1</span><span>Jan 2</span><span>Jan 3</span><span>Jan 4</span><span>Jan 5</span><span>Jan 6</span><span>Jan 7</span>
+                            {/* Month labels */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#666', paddingTop: '4px' }}>
+                                {monthNames.map(m => <span key={m}>{m}</span>)}
                             </div>
                         </div>
                     </div>
                 </div>
 
             </main>
+
+            {/* #2 Savings Detail Blurred Modal Overlay */}
+            {showSavingsModal && (
+                <div
+                    onClick={() => setShowSavingsModal(false)}
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '30px', width: '450px', maxHeight: '500px', overflowY: 'auto' }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white' }}>Savings Breakdown</h3>
+                            <button onClick={() => setShowSavingsModal(false)} style={{ background: 'none', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+                        </div>
+                        <div style={{ marginBottom: '15px', padding: '15px', background: totalSavings >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: '12px', textAlign: 'center' }}>
+                            <span style={{ fontSize: '13px', color: '#888' }}>Net Financial Position</span>
+                            <div style={{ fontSize: '28px', fontWeight: 'bold', color: totalSavings >= 0 ? '#22c55e' : '#ef4444', marginTop: '5px' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
+                        </div>
+                        <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '15px', letterSpacing: '1px' }}>MAJOR EXPENSE DRAINS</h4>
+                        {savingsBreakdown.length > 0 ? savingsBreakdown.map((item, i) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #222', fontSize: '14px' }}>
+                                <span style={{ color: '#ccc' }}>{item.category}</span>
+                                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>-{currSymbol}{item.spent.toLocaleString()}</span>
+                            </div>
+                        )) : (
+                            <div style={{ color: '#666', textAlign: 'center', padding: '20px' }}>No expense categories found.</div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* #7 Settings Modal Overlay */}
+            {showSettingsModal && (
+                <div
+                    onClick={() => setShowSettingsModal(false)}
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '30px', width: '400px' }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white' }}>Settings</h3>
+                            <button onClick={() => setShowSettingsModal(false)} style={{ background: 'none', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+                        </div>
+
+                        {/* Profile Section */}
+                        <div style={{ marginBottom: '25px' }}>
+                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>PROFILE</h4>
+                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid #222' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1a1a1a', border: '2px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Icons.ProfilePic />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontWeight: '600', color: 'white' }}>{user ? user.firstName + ' ' + user.lastName : '...'}</div>
+                                        <div style={{ fontSize: '12px', color: '#888' }}>{user ? user.email : '...'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Currency Preference */}
+                        <div style={{ marginBottom: '25px' }}>
+                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>CURRENCY</h4>
+                            <select
+                                value={currency}
+                                onChange={(e) => { setCurrency(e.target.value); localStorage.setItem('currency', e.target.value); }}
+                                style={{ width: '100%', padding: '10px', background: '#1a1a1a', border: '1px solid #333', color: 'white', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
+                            >
+                                <option value="USD">$ USD — US Dollar</option>
+                                <option value="EUR">€ EUR — Euro</option>
+                                <option value="INR">₹ INR — Indian Rupee</option>
+                            </select>
+                        </div>
+
+                        {/* Theme */}
+                        <div>
+                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>THEME</h4>
+                            <div style={{ padding: '12px 15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '14px', color: '#ccc' }}>Dark Mode</span>
+                                <div style={{ width: '36px', height: '20px', background: '#a855f7', borderRadius: '10px', position: 'relative', cursor: 'pointer' }}>
+                                    <div style={{ width: '16px', height: '16px', background: 'white', borderRadius: '50%', position: 'absolute', top: '2px', right: '2px' }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

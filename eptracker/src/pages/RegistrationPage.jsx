@@ -54,12 +54,28 @@ const RegistrationPage = () => {
         }
     };
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         const validationErrors = validate(formData);
         if (Object.keys(validationErrors).length === 0) {
-            console.log("Registered:", formData);
-            navigate('/login');
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    console.log("Registered successfully:", data);
+                    navigate('/login');
+                } else {
+                    setErrors({ form: data.message || "Registration failed" });
+                }
+            } catch (err) {
+                console.error("Registration error:", err);
+                setErrors({ form: "Server is unreachable. Please try again later." });
+            }
         } else {
             setErrors(validationErrors);
         }
@@ -116,6 +132,7 @@ const RegistrationPage = () => {
                 </div>
 
                 <form onSubmit={handleRegister} noValidate>
+                    {errors.form && <div className="form-error" style={{color: 'red', marginBottom: '10px'}}>{errors.form}</div>}
                     <div className="form-row">
                         <FormInput
                             label="First Name"

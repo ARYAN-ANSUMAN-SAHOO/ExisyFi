@@ -1,10 +1,107 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './dashboard.css';
 
 const Notifications = () => {
     const navigate = useNavigate();
+    const [alerts, setAlerts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Initial Multi-Database Fetch on Page Load
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+
+        const fetchAllData = async () => {
+            try {
+                // Execute a robust Promise.all to fetch the entire database architecture securely simultaneously
+                const [txRes, goalsRes, splitsRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/transactions', { headers: { 'x-auth-token': token } }),
+                    fetch('http://localhost:5000/api/goals', { headers: { 'x-auth-token': token } }),
+                    fetch('http://localhost:5000/api/splits', { headers: { 'x-auth-token': token } })
+                ]);
+
+                if (txRes.ok && goalsRes.ok && splitsRes.ok) {
+                    const transactions = await txRes.json();
+                    const goals = await goalsRes.json();
+                    const splits = await splitsRes.json();
+                    
+                    aggregateNotifications(transactions, goals, splits);
+                } else {
+                    console.error('Failed to authenticate fetching channels.');
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllData();
+    }, [navigate]);
+
+    // Algorithmic core logic combining disparate MongoDB schemas natively
+    const aggregateNotifications = (transactions, goals, splits) => {
+        const rawAlerts = [];
+
+        // 1. Transactions Parsing
+        transactions.forEach(t => {
+            if (t.type === 'expense') {
+                if (t.amount >= 500) {
+                    rawAlerts.push({ title: 'High Expense Trigger', msg: `Large transaction recorded: $${t.amount} at ${t.merchant || 'Unknown'}`, time: t.date, type: 'warn' });
+                } else {
+                    rawAlerts.push({ title: 'Expense Logged', msg: `Transaction: $${t.amount} at ${t.merchant || 'Unknown'}`, time: t.date, type: 'success' });
+                }
+            } else if (t.type === 'income') {
+                rawAlerts.push({ title: 'Income Logged', msg: `Incoming: $${t.amount} recorded.`, time: t.date, type: 'success' });
+            }
+        });
+
+        // 2. Budget Goals tracking logic checking Target vs Saved Amount percentages
+        goals.forEach(g => {
+            const percentage = (g.savedAmount / g.targetAmount) * 100;
+            if (percentage >= 100) {
+                rawAlerts.push({ title: 'Goal Completed! 🎉', msg: `You hit your ${g.category} target of $${g.targetAmount.toLocaleString()}!`, time: g.createdAt, type: 'success' });
+            } else if (percentage >= 80) {
+                 rawAlerts.push({ title: 'Goal Nearing Completion', msg: `Great job! You are ${percentage.toFixed(0)}% towards your ${g.category} target!`, time: g.createdAt, type: 'warn' });
+            } else {
+                 rawAlerts.push({ title: 'Goal Started', msg: `You initiated a ${g.category} target of $${g.targetAmount.toLocaleString()}. Keep pushing!`, time: g.createdAt, type: 'info' });
+            }
+        });
+
+        // 3. Pending Bills (Splits) mapping uniquely finding unpaid debts!
+        splits.forEach(s => {
+            if (s.status === 'pending') {
+                 rawAlerts.push({ title: 'Pending Bill', msg: `Reminder: You owe $${s.pendingAmount.toFixed(2)} for ${s.description}`, time: s.createdAt, type: 'warn' });
+            } else if (s.status === 'settled') {
+                 rawAlerts.push({ title: 'Bill Settled', msg: `You permanently cleared: ${s.description}.`, time: s.createdAt, type: 'success' });
+            }
+        });
+
+        // Mathematical sorting descending to push newest items to the top!
+        rawAlerts.sort((a, b) => new Date(b.time) - new Date(a.time));
+        setAlerts(rawAlerts);
+    };
+
+    // Logical formatter parsing timestamps intelligently 
+    const timeSince = (date) => {
+        const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + "y ago";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + "mo ago";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + "d ago";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + "h ago";
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + "m ago";
+        return "Just now";
+    };
 
     return (
         <motion.div
@@ -20,13 +117,13 @@ const Notifications = () => {
                         className="primary-btn"
                         style={{ padding: '8px 16px' }}
                     >
-                        ← Back
+                        ← Back to Dashboard
                     </motion.button>
                     <h2 className="gradient-text">Activity Feed</h2>
                 </header>
 
                 <div className="bento-grid">
-                    {/* Alerts List */}
+                    {/* Alerts List fetched dynamically natively utilizing Data from Multi-MongoDB schemas! */}
                     <motion.div
                         className="bento-item glass-card-sleek"
                         style={{ gridColumn: "span 8", gridRow: "span 5" }}
@@ -34,28 +131,28 @@ const Notifications = () => {
                         animate={{ y: 0, opacity: 1 }}
                     >
                         <div className="card-header">
-                            <h3 className="card-title">Recent Alerts</h3>
+                            <h3 className="card-title">Database Verified Alerts</h3>
+                            <span style={{ fontSize: '12px', color: '#a855f7' }}>Live MongoDB Sync</span>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px' }}>
-                            {[
-                                { title: 'Budget Alert', msg: 'You have spent 80% of your Rent budget.', time: '2h ago', type: 'warn' },
-                                { title: 'Subscription', msg: 'Netflix is due tomorrow.', time: '5h ago', type: 'info' },
-                                { title: 'New Log', msg: 'Manual expense added: $12.50', time: '1d ago', type: 'success' },
-                                { title: 'System', msg: 'Weekly report is now available.', time: '2d ago', type: 'info' }
-                            ].map((n, i) => (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px', maxHeight: '500px', overflowY: 'auto', paddingRight: '10px' }}>
+                            {loading ? (
+                                <div style={{ color: '#888', padding: '20px', textAlign: 'center' }}>Aggregating MongoDB Systems...</div>
+                            ) : alerts.length > 0 ? alerts.map((n, i) => (
                                 <motion.div
                                     key={i}
                                     whileHover={{ x: 5, background: 'rgba(255,255,255,0.05)' }}
-                                    style={{ padding: '15px', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', display: 'flex', gap: '15px', alignItems: 'center' }}
+                                    style={{ padding: '15px', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', display: 'flex', gap: '15px', alignItems: 'flex-start' }}
                                 >
-                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: n.type === 'warn' ? '#a855f7' : n.type === 'success' ? '#3b82f6' : '#555' }} />
+                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: n.type === 'warn' ? '#ef4444' : n.type === 'success' ? '#22c55e' : '#3b82f6', marginTop: '6px' }} />
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: '600', fontSize: '15px' }}>{n.title}</div>
-                                        <div style={{ color: '#888', fontSize: '13px' }}>{n.msg}</div>
+                                        <div style={{ fontWeight: '600', fontSize: '15px', color: 'white' }}>{n.title}</div>
+                                        <div style={{ color: '#ccc', fontSize: '13px', marginTop: '4px' }}>{n.msg}</div>
                                     </div>
-                                    <div style={{ fontSize: '11px', color: '#444' }}>{n.time}</div>
+                                    <div style={{ fontSize: '11px', color: '#888', whiteSpace: 'nowrap' }}>{timeSince(n.time)}</div>
                                 </motion.div>
-                            ))}
+                            )) : (
+                                <div style={{ color: '#555', padding: '20px', textAlign: 'center' }}>No active notifications found securely synced from your databases.</div>
+                            )}
                         </div>
                     </motion.div>
 
@@ -67,12 +164,12 @@ const Notifications = () => {
                         <h3 className="card-title">Alert Settings</h3>
                         <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', color: '#ccc' }}>Email Alerts</span>
+                                <span style={{ fontSize: '13px', color: '#ccc' }}>Email Summaries</span>
                                 <div style={{ width: '30px', height: '16px', background: '#3b82f6', borderRadius: '8px' }} />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: '13px', color: '#ccc' }}>Push Notifications</span>
-                                <div style={{ width: '30px', height: '16px', background: '#333', borderRadius: '8px' }} />
+                                <div style={{ width: '30px', height: '16px', background: '#a855f7', borderRadius: '8px' }} />
                             </div>
                         </div>
                     </motion.div>
@@ -84,7 +181,7 @@ const Notifications = () => {
                     >
                         <div style={{ fontSize: '48px', marginBottom: '10px' }}>🔔</div>
                         <h3>Stay Notified</h3>
-                        <p style={{ fontSize: '12px', color: '#555', marginTop: '10px' }}>Never miss a payment or a budget threshold again.</p>
+                        <p style={{ fontSize: '12px', color: '#555', marginTop: '10px' }}>Your Activity Feed automatically aggregates live database splits, expenses, and budgetary goals into a unified engine.</p>
                     </motion.div>
                 </div>
             </div>

@@ -1,0 +1,131 @@
+.services-page {
+  /* Inherit main background from App/home, or set specific if needed */
+  background: black;
+  color: white;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional Background Gradient/Lighting specific to Services */
+.services-page::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.services-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.services-header h1 {
+  font-size: 56px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.services-header h1 .gradient-text {
+  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: capitalize;
+}
+
+.services-header p {
+  color: #a0a0a0;
+  font-size: 18px;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.service-card-wrapper {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 20px;
+  padding: 1px; /* for the gradient border effect */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+.service-card {
+  background: #111112; /* Darker matte background inside */
+  border-radius: 19px;
+  padding: 30px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.service-info {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.service-info h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.service-info p {
+  color: #a0a0a0;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Specific glowing icon colors if styling inline SVGs via CSS */
+/* Or you can use stroke directly in the component */
+
+/* Responsive adjustment */
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.active-link {
+  color: #a855f7 !important;
+  border-bottom: 2px solid #a855f7;
+  padding-bottom: 4px;
+}
