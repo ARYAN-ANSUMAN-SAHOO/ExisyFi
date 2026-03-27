@@ -132,23 +132,23 @@ const Notifications = () => {
                     >
                         <div className="card-header">
                             <h3 className="card-title">Database Verified Alerts</h3>
-                            <span style={{ fontSize: '12px', color: '#a855f7' }}>Live MongoDB Sync</span>
+                            <span style={{ fontSize: '12px', color: '#7C3AED' }}>Live MongoDB Sync</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px', maxHeight: '500px', overflowY: 'auto', paddingRight: '10px' }}>
                             {loading ? (
-                                <div style={{ color: '#888', padding: '20px', textAlign: 'center' }}>Aggregating MongoDB Systems...</div>
+                                <div style={{ color: '#9CA3AF', padding: '20px', textAlign: 'center' }}>Aggregating MongoDB Systems...</div>
                             ) : alerts.length > 0 ? alerts.map((n, i) => (
                                 <motion.div
                                     key={i}
                                     whileHover={{ x: 5, background: 'rgba(255,255,255,0.05)' }}
                                     style={{ padding: '15px', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', display: 'flex', gap: '15px', alignItems: 'flex-start' }}
                                 >
-                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: n.type === 'warn' ? '#ef4444' : n.type === 'success' ? '#22c55e' : '#3b82f6', marginTop: '6px' }} />
+                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: n.type === 'warn' ? '#ef4444' : n.type === 'success' ? '#22c55e' : '#A78BFA', marginTop: '6px' }} />
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: '600', fontSize: '15px', color: 'white' }}>{n.title}</div>
-                                        <div style={{ color: '#ccc', fontSize: '13px', marginTop: '4px' }}>{n.msg}</div>
+                                        <div style={{ fontWeight: '600', fontSize: '15px', color: '#1E1B4B' }}>{n.title}</div>
+                                        <div style={{ color: '#6B7280', fontSize: '13px', marginTop: '4px' }}>{n.msg}</div>
                                     </div>
-                                    <div style={{ fontSize: '11px', color: '#888', whiteSpace: 'nowrap' }}>{timeSince(n.time)}</div>
+                                    <div style={{ fontSize: '11px', color: '#9CA3AF', whiteSpace: 'nowrap' }}>{timeSince(n.time)}</div>
                                 </motion.div>
                             )) : (
                                 <div style={{ color: '#555', padding: '20px', textAlign: 'center' }}>No active notifications found securely synced from your databases.</div>
@@ -164,12 +164,12 @@ const Notifications = () => {
                         <h3 className="card-title">Alert Settings</h3>
                         <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', color: '#ccc' }}>Email Summaries</span>
-                                <div style={{ width: '30px', height: '16px', background: '#3b82f6', borderRadius: '8px' }} />
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Email Summaries</span>
+                                <div style={{ width: '30px', height: '16px', background: '#A78BFA', borderRadius: '8px' }} />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', color: '#ccc' }}>Push Notifications</span>
-                                <div style={{ width: '30px', height: '16px', background: '#a855f7', borderRadius: '8px' }} />
+                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Push Notifications</span>
+                                <div style={{ width: '30px', height: '16px', background: '#7C3AED', borderRadius: '8px' }} />
                             </div>
                         </div>
                     </motion.div>

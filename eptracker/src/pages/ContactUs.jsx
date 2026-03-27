@@ -93,8 +93,8 @@ function ContactUs() {
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#cu0)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="cu0" x1="4" y1="4" x2="20" y2="20" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#3b82f6" />
-                                            <stop offset="1" stopColor="#a855f7" />
+                                            <stop stopColor="#A78BFA" />
+                                            <stop offset="1" stopColor="#7C3AED" />
                                         </linearGradient>
                                     </defs>
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -110,8 +110,8 @@ function ContactUs() {
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#cu1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="cu1" x1="2" y1="4" x2="22" y2="20" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#3b82f6" />
-                                            <stop offset="1" stopColor="#a855f7" />
+                                            <stop stopColor="#A78BFA" />
+                                            <stop offset="1" stopColor="#7C3AED" />
                                         </linearGradient>
                                     </defs>
                                     <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -127,8 +127,8 @@ function ContactUs() {
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#cu2)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="cu2" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#3b82f6" />
-                                            <stop offset="1" stopColor="#a855f7" />
+                                            <stop stopColor="#A78BFA" />
+                                            <stop offset="1" stopColor="#7C3AED" />
                                         </linearGradient>
                                     </defs>
                                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />

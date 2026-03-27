@@ -10,7 +10,7 @@ const SplitTransaction = () => {
     const [totalAmount, setTotalAmount] = useState('');
     const [participantsStr, setParticipantsStr] = useState('');
     const [includeMyself, setIncludeMyself] = useState(true);
-    
+
     const [splits, setSplits] = useState([]);
     const [status, setStatus] = useState(null);
 
@@ -69,29 +69,29 @@ const SplitTransaction = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-auth-token': token 
+                    'x-auth-token': token
                 },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
                 const newSplit = await response.json();
-                
+
                 // Clear form
                 setDescription('');
                 setTotalAmount('');
                 setParticipantsStr('');
                 setIncludeMyself(true);
                 setStatus({ type: 'success', text: 'Split Bill successfully calculated and saved!' });
-                
+
                 // Instantly update the UI Context array
                 setSplits([newSplit, ...splits]);
-                
+
                 setTimeout(() => setStatus(null), 3000);
             } else {
                 setStatus({ type: 'error', text: 'Failed to record split. Check database connection.' });
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             setStatus({ type: 'error', text: 'Database unreachable.' });
         }
@@ -103,7 +103,7 @@ const SplitTransaction = () => {
             const response = await fetch(`http://localhost:5000/api/splits/${id}/settle`, {
                 method: 'PUT',
                 headers: {
-                    'x-auth-token': token 
+                    'x-auth-token': token
                 }
             });
 
@@ -115,14 +115,14 @@ const SplitTransaction = () => {
                 setStatus({ type: 'error', text: 'Failed to mark as paid.' });
                 setTimeout(() => setStatus(null), 3000);
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
     }
 
     // Interactive Math for the UI Summary Sidebar
-    const activeIndividualShare = (totalAmount && participantsStr) ? 
-        (parseFloat(totalAmount) / (participantsStr.split(',').filter(p => p.trim() !== '').length + (includeMyself ? 1 : 0))).toFixed(2) 
+    const activeIndividualShare = (totalAmount && participantsStr) ?
+        (parseFloat(totalAmount) / (participantsStr.split(',').filter(p => p.trim() !== '').length + (includeMyself ? 1 : 0))).toFixed(2)
         : '0.00';
 
     return (
@@ -151,51 +151,51 @@ const SplitTransaction = () => {
                             <h3 className="fp-section-title">Record Database Split</h3>
                             <form className="auth-form" style={{ gap: '0', padding: '0' }}>
                                 {status && (
-                                   <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', textAlign: 'center', backgroundColor: status.type === 'error' ? '#fee2e2' : status.type === 'success' ? '#dcfce7' : '#e0f2fe', color: status.type === 'error' ? '#991b1b' : status.type === 'success' ? '#166534' : '#075985' }}>
+                                    <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', textAlign: 'center', backgroundColor: status.type === 'error' ? '#fee2e2' : status.type === 'success' ? '#dcfce7' : '#e0f2fe', color: status.type === 'error' ? '#991b1b' : status.type === 'success' ? '#166534' : '#075985' }}>
                                         {status.text}
-                                   </div>
+                                    </div>
                                 )}
                                 <div className="form-group">
                                     <label>Bill Description</label>
-                                    <input 
-                                        type="text" 
-                                        placeholder="E.g., Dinner at Joey's" 
-                                        className="search-bar" 
-                                        style={{ width: '100%', color: 'white' }} 
+                                    <input
+                                        type="text"
+                                        placeholder="E.g., Dinner at Joey's"
+                                        className="search-bar"
+                                        style={{ width: '100%', color: '#1E1B4B' }}
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label>Total Bill Amount ($)</label>
-                                    <input 
-                                        type="number" 
-                                        placeholder="Enter target total bill" 
-                                        className="search-bar" 
-                                        style={{ width: '100%', color: 'white' }} 
+                                    <input
+                                        type="number"
+                                        placeholder="Enter target total bill"
+                                        className="search-bar"
+                                        style={{ width: '100%', color: '#1E1B4B' }}
                                         value={totalAmount}
                                         onChange={(e) => setTotalAmount(e.target.value)}
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label>Participants (Emails - Comma Separated)</label>
-                                    <textarea 
-                                        placeholder="friend1@example.com, friend2@example.com" 
-                                        className="search-bar" 
-                                        style={{ width: '100%', height: '100px', color: 'white', resize: 'none' }} 
+                                    <textarea
+                                        placeholder="friend1@example.com, friend2@example.com"
+                                        className="search-bar"
+                                        style={{ width: '100%', height: '100px', color: '#1E1B4B', resize: 'none' }}
                                         value={participantsStr}
                                         onChange={(e) => setParticipantsStr(e.target.value)}
                                     />
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '25px' }}>
-                                    <input 
-                                        type="checkbox" 
-                                        id="user-share" 
-                                        style={{ width: '18px', height: '18px', accentColor: '#a855f7', cursor: 'pointer' }} 
+                                    <input
+                                        type="checkbox"
+                                        id="user-share"
+                                        style={{ width: '18px', height: '18px', accentColor: '#7C3AED', cursor: 'pointer' }}
                                         checked={includeMyself}
                                         onChange={(e) => setIncludeMyself(e.target.checked)}
                                     />
-                                    <label htmlFor="user-share" style={{ fontSize: '15px', color: '#ccc', margin: 0, cursor: 'pointer' }}>Include my share</label>
+                                    <label htmlFor="user-share" style={{ fontSize: '15px', color: '#6B7280', margin: 0, cursor: 'pointer' }}>Include my share</label>
                                 </div>
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
@@ -205,7 +205,7 @@ const SplitTransaction = () => {
                                     className="primary-btn"
                                     style={{ width: '100%', padding: '16px', borderRadius: '50px' }}
                                 >
-                                    Push Split Securely
+                                    Split Transaction
                                 </motion.button>
                             </form>
                         </div>
@@ -215,31 +215,31 @@ const SplitTransaction = () => {
                     <div className="full-page-sidebar">
                         {/* Summary */}
                         <div>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#fff' }}>Pending Share</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1E1B4B' }}>Pending Share</h3>
                             <div className="fp-stat-item">
                                 <div className="fp-stat-label">Individual Mathematical Share</div>
-                                <div className="fp-stat-value" style={{ color: '#3b82f6' }}>${activeIndividualShare}</div>
+                                <div className="fp-stat-value" style={{ color: '#A78BFA' }}>${activeIndividualShare}</div>
                                 <p style={{ fontSize: '12px', color: '#555', marginTop: '5px' }}>Updates natively while verifying inputs</p>
                             </div>
                         </div>
 
                         {/* Status Tracker */}
                         <div>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#fff' }}>Active Pending Bills</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1E1B4B' }}>Active Pending Bills</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 {/* User explicitly asked "no need to show settled bills". Safe UI .filter covers exactly this! */}
                                 {splits.filter(b => b.status === 'pending').length > 0 ? splits.filter(b => b.status === 'pending').map((bill, index) => (
                                     <div key={index} style={{ display: 'flex', flexDirection: 'column', fontSize: '14px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span style={{ color: '#ccc', fontWeight: '600' }}>{bill.description}</span>
-                                            <span style={{ color: '#a855f7', fontWeight: 'bold' }}>${parseFloat(bill.pendingAmount).toFixed(2)} pending</span>
+                                            <span style={{ color: '#6B7280', fontWeight: '600' }}>{bill.description}</span>
+                                            <span style={{ color: '#7C3AED', fontWeight: 'bold' }}>${parseFloat(bill.pendingAmount).toFixed(2)} pending</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', alignItems: 'center' }}>
-                                            <span style={{ color: '#666', fontSize: '12px' }}>Total: ${bill.totalAmount} ({bill.participants} ways)</span>
+                                            <span style={{ color: '#9CA3AF', fontSize: '12px' }}>Total: ${bill.totalAmount} ({bill.participants} ways)</span>
                                             {/* Explored mapping logic: "Mark as Paid" disappears it! */}
-                                            <button 
+                                            <button
                                                 onClick={() => handleMarkAsPaid(bill._id)}
-                                                style={{ padding: '4px 8px', background: '#22c55e', color: 'white', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                                                style={{ padding: '4px 8px', background: '#22c55e', color: '#1E1B4B', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
                                             >
                                                 Mark as Paid ✓
                                             </button>

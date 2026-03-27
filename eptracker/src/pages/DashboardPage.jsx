@@ -16,7 +16,7 @@ const Icons = {
     Plus: () => <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
     LogOut: () => <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
     // #1 Default Profile Picture SVG
-    ProfilePic: () => <svg viewBox="0 0 24 24" width="28" height="28" fill="#888"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
+    ProfilePic: () => <svg viewBox="0 0 24 24" width="28" height="28" fill="#9CA3AF"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" /></svg>
 };
 
 // Navigation pages for the search index
@@ -204,7 +204,7 @@ const DashboardPage = () => {
 
                 {/* #1 Profile with default SVG avatar */}
                 <div className="user-profile">
-                    <div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a', border: '2px solid #333' }}>
+                    <div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F3FF', border: '2px solid #7C3AED' }}>
                         <Icons.ProfilePic />
                     </div>
                     <div className="user-info">
@@ -227,11 +227,11 @@ const DashboardPage = () => {
                                 value={searchQuery}
                                 onChange={(e) => { setSearchQuery(e.target.value); setShowSearchResults(true); }}
                                 onFocus={() => setShowSearchResults(true)}
-                                style={{ background: 'transparent', border: 'none', outline: 'none', color: 'white', width: '100%', fontSize: '14px' }}
+                                style={{ background: 'transparent', border: 'none', outline: 'none', color: '#1E1B4B', width: '100%', fontSize: '14px' }}
                             />
                         </div>
                         {showSearchResults && searchResults.length > 0 && (
-                            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px', background: '#111', border: '1px solid #333', borderRadius: '12px', overflow: 'hidden', zIndex: 100, maxHeight: '300px', overflowY: 'auto' }}>
+                            <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px', background: '#FFFFFF', border: '1px solid #E9E5F5', borderRadius: '12px', overflow: 'hidden', zIndex: 100, maxHeight: '300px', overflowY: 'auto', boxShadow: '0 8px 30px rgba(124,58,237,0.1)' }}>
                                 {searchResults.map((r, i) => (
                                     <div
                                         key={i}
@@ -240,13 +240,13 @@ const DashboardPage = () => {
                                             setShowSearchResults(false);
                                             setSearchQuery('');
                                         }}
-                                        style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.2s' }}
-                                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
+                                        style={{ padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #E9E5F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'background 0.2s' }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#F5F3FF'}
                                         onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                     >
                                         <div>
-                                            <div style={{ fontSize: '14px', fontWeight: '600', color: 'white' }}>{r.label}</div>
-                                            <div style={{ fontSize: '11px', color: '#888' }}>{r.type === 'page' ? 'Navigate' : r.txType}</div>
+                                            <div style={{ fontSize: '14px', fontWeight: '600', color: '#1E1B4B' }}>{r.label}</div>
+                                            <div style={{ fontSize: '11px', color: '#9CA3AF' }}>{r.type === 'page' ? 'Navigate' : r.txType}</div>
                                         </div>
                                         {r.type === 'transaction' && (
                                             <span style={{ color: r.txType === 'income' ? '#22c55e' : '#ef4444', fontWeight: 'bold', fontSize: '13px' }}>
@@ -270,7 +270,7 @@ const DashboardPage = () => {
                             <div className="icon-box">{currSymbol}</div>
                             <span className="menu-dots">...</span>
                         </div>
-                        <div className="stat-label" style={{ color: '#888', fontSize: '12px' }}>TOTAL INCOME</div>
+                        <div className="stat-label" style={{ color: '#9CA3AF', fontSize: '12px' }}>TOTAL INCOME</div>
                         <div className="stat-value">{currSymbol}{totalIncome.toLocaleString()}</div>
                         <div className="stat-change up">↗ 100% (Baseline)</div>
                     </div>
@@ -291,12 +291,12 @@ const DashboardPage = () => {
                             {/* #2 View Details triggers the savings modal */}
                             <button
                                 onClick={() => setShowSavingsModal(true)}
-                                style={{ background: '#1a1a1a', border: '1px solid #333', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer' }}
+                                style={{ background: '#F5F3FF', border: '1px solid #E9E5F5', color: '#7C3AED', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: '600' }}
                             >
                                 View Details
                             </button>
                         </div>
-                        <div className="stat-label" style={{ color: '#888', fontSize: '12px' }}>TOTAL SAVINGS</div>
+                        <div className="stat-label" style={{ color: '#9CA3AF', fontSize: '12px' }}>TOTAL SAVINGS</div>
                         <div className="stat-value" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
                         <div className="stat-change" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{totalSavings >= 0 ? '↗' : '↘'} {savingsPercent}% saved</div>
                     </div>
@@ -307,7 +307,7 @@ const DashboardPage = () => {
                     <div className="dashboard-card">
                         <div className="card-header">
                             <h3 className="card-title">Top Expense Sources</h3>
-                            <span style={{ color: '#666' }}>...</span>
+                            <span style={{ color: '#9CA3AF' }}>...</span>
                         </div>
                         <div className="bar-chart-container">
                             {topExpenses.length > 0 ? topExpenses.map((item, i) => (
@@ -318,7 +318,7 @@ const DashboardPage = () => {
                                     <span className="bar-label">{item.label}</span>
                                 </div>
                             )) : (
-                                <div style={{ color: '#666', padding: '20px' }}>No expense data recorded.</div>
+                                <div style={{ color: '#9CA3AF', padding: '20px' }}>No expense data recorded.</div>
                             )}
                         </div>
                     </div>
@@ -329,24 +329,24 @@ const DashboardPage = () => {
                     <div className="dashboard-card">
                         <div className="card-header">
                             <h3 className="card-title">Report Overview</h3>
-                            <span style={{ color: '#666' }}>...</span>
+                            <span style={{ color: '#9CA3AF' }}>...</span>
                         </div>
                         <div className="pie-chart-wrapper">
                             {/* #3 Dynamic conic-gradient pie */}
-                            <div className="pie-chart" style={{ background: 'conic-gradient(#a855f7 0% ' + incomeSlice + '%, #3b82f6 ' + incomeSlice + '% ' + (incomeSlice + expenseSlice) + '%, #1a1a1a ' + (incomeSlice + expenseSlice) + '% 100%)' }}>
+                            <div className="pie-chart" style={{ background: 'conic-gradient(#7C3AED 0% ' + incomeSlice + '%, #A78BFA ' + incomeSlice + '% ' + (incomeSlice + expenseSlice) + '%, #E9E5F5 ' + (incomeSlice + expenseSlice) + '% 100%)' }}>
                                 <div className="pie-hole"></div>
                             </div>
                             <div className="pie-legend">
                                 <div className="legend-item">
-                                    <div className="dot" style={{ background: '#a855f7' }}></div>
+                                    <div className="dot" style={{ background: '#7C3AED' }}></div>
                                     <span>Income {currSymbol}{totalIncome.toLocaleString()}</span>
                                 </div>
                                 <div className="legend-item">
-                                    <div className="dot" style={{ background: '#3b82f6' }}></div>
+                                    <div className="dot" style={{ background: '#A78BFA' }}></div>
                                     <span>Expense {currSymbol}{totalExpense.toLocaleString()}</span>
                                 </div>
                                 <div className="legend-item">
-                                    <div className="dot" style={{ background: '#1a1a1a', border: '1px solid #333' }}></div>
+                                    <div className="dot" style={{ background: '#E9E5F5', border: '1px solid #DDD6FE' }}></div>
                                     <span>Savings {currSymbol}{totalSavings.toLocaleString()}</span>
                                 </div>
                             </div>
@@ -356,25 +356,25 @@ const DashboardPage = () => {
                     <div className="dashboard-card">
                         <div className="card-header">
                             <h3 className="card-title">Expense Activity</h3>
-                            <div style={{ fontSize: '12px', color: '#3b82f6' }}>— Monthly trend</div>
+                            <div style={{ fontSize: '12px', color: '#7C3AED' }}>— Monthly trend</div>
                         </div>
                         {/* #3 Dynamic SVG Line Chart from monthly expense data */}
                         <div style={{ height: '140px', width: '100%', position: 'relative' }}>
                             <svg viewBox="0 0 500 140" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
-                                <line x1="0" y1="35" x2="500" y2="35" stroke="#222" strokeWidth="1" />
-                                <line x1="0" y1="70" x2="500" y2="70" stroke="#222" strokeWidth="1" />
-                                <line x1="0" y1="105" x2="500" y2="105" stroke="#222" strokeWidth="1" />
+                                <line x1="0" y1="35" x2="500" y2="35" stroke="#E9E5F5" strokeWidth="1" />
+                                <line x1="0" y1="70" x2="500" y2="70" stroke="#E9E5F5" strokeWidth="1" />
+                                <line x1="0" y1="105" x2="500" y2="105" stroke="#E9E5F5" strokeWidth="1" />
                                 {/* Dynamic polyline from actual monthly data */}
-                                <polyline points={linePoints} fill="none" stroke="#3b82f6" strokeWidth="2" />
+                                <polyline points={linePoints} fill="none" stroke="#7C3AED" strokeWidth="2" />
                                 {/* Data point circles */}
                                 {monthlyExpenses.map((val, i) => {
                                     const x = (i / 11) * 480 + 10;
                                     const y = 130 - (val / maxMonthly) * 120;
-                                    return <circle key={i} cx={x} cy={y} r="3" fill="#3b82f6" />;
+                                    return <circle key={i} cx={x} cy={y} r="3" fill="#7C3AED" />;
                                 })}
                             </svg>
                             {/* Month labels */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#666', paddingTop: '4px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#9CA3AF', paddingTop: '4px' }}>
                                 {monthNames.map(m => <span key={m}>{m}</span>)}
                             </div>
                         </div>
@@ -387,28 +387,28 @@ const DashboardPage = () => {
             {showSavingsModal && (
                 <div
                     onClick={() => setShowSavingsModal(false)}
-                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
                     <div
                         onClick={(e) => e.stopPropagation()}
-                        style={{ background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '30px', width: '450px', maxHeight: '500px', overflowY: 'auto' }}
+                        style={{ background: '#FFFFFF', border: '1px solid #E9E5F5', borderRadius: '20px', padding: '30px', width: '450px', maxHeight: '500px', overflowY: 'auto', boxShadow: '0 20px 60px rgba(124,58,237,0.15)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white' }}>Savings Breakdown</h3>
-                            <button onClick={() => setShowSavingsModal(false)} style={{ background: 'none', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E1B4B' }}>Savings Breakdown</h3>
+                            <button onClick={() => setShowSavingsModal(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '20px', cursor: 'pointer' }}>✕</button>
                         </div>
                         <div style={{ marginBottom: '15px', padding: '15px', background: totalSavings >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: '12px', textAlign: 'center' }}>
-                            <span style={{ fontSize: '13px', color: '#888' }}>Net Financial Position</span>
+                            <span style={{ fontSize: '13px', color: '#6B7280' }}>Net Financial Position</span>
                             <div style={{ fontSize: '28px', fontWeight: 'bold', color: totalSavings >= 0 ? '#22c55e' : '#ef4444', marginTop: '5px' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
                         </div>
-                        <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '15px', letterSpacing: '1px' }}>MAJOR EXPENSE DRAINS</h4>
+                        <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '15px', letterSpacing: '1px' }}>MAJOR EXPENSE DRAINS</h4>
                         {savingsBreakdown.length > 0 ? savingsBreakdown.map((item, i) => (
-                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #222', fontSize: '14px' }}>
-                                <span style={{ color: '#ccc' }}>{item.category}</span>
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #E9E5F5', fontSize: '14px' }}>
+                                <span style={{ color: '#1E1B4B' }}>{item.category}</span>
                                 <span style={{ color: '#ef4444', fontWeight: 'bold' }}>-{currSymbol}{item.spent.toLocaleString()}</span>
                             </div>
                         )) : (
-                            <div style={{ color: '#666', textAlign: 'center', padding: '20px' }}>No expense categories found.</div>
+                            <div style={{ color: '#9CA3AF', textAlign: 'center', padding: '20px' }}>No expense categories found.</div>
                         )}
                     </div>
                 </div>
@@ -422,24 +422,24 @@ const DashboardPage = () => {
                 >
                     <div
                         onClick={(e) => e.stopPropagation()}
-                        style={{ background: '#111', border: '1px solid #333', borderRadius: '20px', padding: '30px', width: '400px' }}
+                        style={{ background: '#FFFFFF', border: '1px solid #E9E5F5', borderRadius: '20px', padding: '30px', width: '400px', boxShadow: '0 20px 60px rgba(124,58,237,0.15)' }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: 'white' }}>Settings</h3>
-                            <button onClick={() => setShowSettingsModal(false)} style={{ background: 'none', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+                            <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E1B4B' }}>Settings</h3>
+                            <button onClick={() => setShowSettingsModal(false)} style={{ background: 'none', border: 'none', color: '#9CA3AF', fontSize: '20px', cursor: 'pointer' }}>✕</button>
                         </div>
 
                         {/* Profile Section */}
                         <div style={{ marginBottom: '25px' }}>
-                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>PROFILE</h4>
-                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid #222' }}>
+                            <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>PROFILE</h4>
+                            <div style={{ padding: '15px', background: '#F5F3FF', borderRadius: '12px', border: '1px solid #E9E5F5' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#1a1a1a', border: '2px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#F5F3FF', border: '2px solid #7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <Icons.ProfilePic />
                                     </div>
                                     <div>
-                                        <div style={{ fontWeight: '600', color: 'white' }}>{user ? user.firstName + ' ' + user.lastName : '...'}</div>
-                                        <div style={{ fontSize: '12px', color: '#888' }}>{user ? user.email : '...'}</div>
+                                        <div style={{ fontWeight: '600', color: '#1E1B4B' }}>{user ? user.firstName + ' ' + user.lastName : '...'}</div>
+                                        <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{user ? user.email : '...'}</div>
                                     </div>
                                 </div>
                             </div>
@@ -447,11 +447,11 @@ const DashboardPage = () => {
 
                         {/* Currency Preference */}
                         <div style={{ marginBottom: '25px' }}>
-                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>CURRENCY</h4>
+                            <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>CURRENCY</h4>
                             <select
                                 value={currency}
                                 onChange={(e) => { setCurrency(e.target.value); localStorage.setItem('currency', e.target.value); }}
-                                style={{ width: '100%', padding: '10px', background: '#1a1a1a', border: '1px solid #333', color: 'white', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
+                                style={{ width: '100%', padding: '10px', background: '#F5F3FF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
                             >
                                 <option value="USD">$ USD — US Dollar</option>
                                 <option value="EUR">€ EUR — Euro</option>
@@ -461,10 +461,10 @@ const DashboardPage = () => {
 
                         {/* Theme */}
                         <div>
-                            <h4 style={{ color: '#888', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>THEME</h4>
-                            <div style={{ padding: '12px 15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid #222', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '14px', color: '#ccc' }}>Dark Mode</span>
-                                <div style={{ width: '36px', height: '20px', background: '#a855f7', borderRadius: '10px', position: 'relative', cursor: 'pointer' }}>
+                            <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>THEME</h4>
+                            <div style={{ padding: '12px 15px', background: '#F5F3FF', borderRadius: '12px', border: '1px solid #E9E5F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: '14px', color: '#6B7280' }}>Light Mode</span>
+                                <div style={{ width: '36px', height: '20px', background: '#7C3AED', borderRadius: '10px', position: 'relative', cursor: 'pointer' }}>
                                     <div style={{ width: '16px', height: '16px', background: 'white', borderRadius: '50%', position: 'absolute', top: '2px', right: '2px' }}></div>
                                 </div>
                             </div>

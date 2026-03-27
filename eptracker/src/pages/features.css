@@ -1,6 +1,6 @@
 .features-page {
-  background: black;
-  color: white;
+  background: #FAFAFE;
+  color: #1E1B4B;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -13,7 +13,7 @@
   left: 50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.04) 0%, transparent 70%);
   transform: translate(-50%, -50%);
   z-index: 0;
   pointer-events: none;
@@ -36,17 +36,17 @@
   font-weight: 800;
   margin-bottom: 20px;
   letter-spacing: 1px;
+  color: #1E1B4B;
 }
 
 .features-header h1 .gradient-text {
-  background: linear-gradient(90deg, #3b82f6, #a855f7);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #7C3AED;
+  background: none;
+  -webkit-text-fill-color: #7C3AED;
 }
 
 .features-header p {
-  color: #a0a0a0;
+  color: #6B7280;
   font-size: 18px;
   max-width: 700px;
   margin: 0 auto;
@@ -60,7 +60,7 @@
 }
 
 .feature-card-wrapper {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+  background: none;
   border-radius: 20px;
   padding: 1px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -68,19 +68,18 @@
 
 .feature-card-wrapper:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
 }
 
 .feature-card {
-  background: #111112;
+  background: #FFFFFF;
   border-radius: 19px;
   padding: 30px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02);
+  border: 1px solid #E9E5F5;
 }
 
 .feature-info {
@@ -92,11 +91,11 @@
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #fff;
+  color: #1E1B4B;
 }
 
 .feature-info p {
-  color: #a0a0a0;
+  color: #6B7280;
   font-size: 15px;
   line-height: 1.5;
   margin: 0;
@@ -112,8 +111,8 @@
 }
 
 .features-active-link {
-  color: #a855f7 !important;
-  border-bottom: 2px solid #a855f7;
+  color: #7C3AED !important;
+  border-bottom: 2px solid #7C3AED;
   padding-bottom: 4px;
 }
 

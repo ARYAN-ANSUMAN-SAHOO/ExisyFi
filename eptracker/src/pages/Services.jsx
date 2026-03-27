@@ -53,13 +53,13 @@ function Services() {
                                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#paint0_linear)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="paint0_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#a855f7" />
-                                            <stop offset="1" stopColor="#3b82f6" />
+                                            <stop stopColor="#7C3AED" />
+                                            <stop offset="1" stopColor="#A78BFA" />
                                         </linearGradient>
                                     </defs>
                                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                                     <circle cx="16" cy="16" r="6" stroke="url(#paint0_linear)" strokeWidth="1.5"/>
-                                    <path d="M20 20l2 2" stroke="#a855f7"/>
+                                    <path d="M20 20l2 2" stroke="#7C3AED"/>
                                 </svg>
                             </div>
                         </div>
@@ -77,7 +77,7 @@ function Services() {
                                     <defs>
                                         <linearGradient id="paint1_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
                                             <stop stopColor="#0ea5e9" />
-                                            <stop offset="1" stopColor="#a855f7" />
+                                            <stop offset="1" stopColor="#7C3AED" />
                                         </linearGradient>
                                     </defs>
                                     <rect x="4" y="4" width="16" height="16" rx="2" ry="2" />
@@ -105,13 +105,13 @@ function Services() {
                                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#paint2_linear)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="paint2_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#3b82f6" />
-                                            <stop offset="1" stopColor="#a855f7" />
+                                            <stop stopColor="#A78BFA" />
+                                            <stop offset="1" stopColor="#7C3AED" />
                                         </linearGradient>
                                     </defs>
                                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                    <circle cx="12" cy="18" r="3" stroke="#a855f7" />
-                                    <path d="M12 15v1M12 21v1M10 18H9M15 18h-1" stroke="#a855f7"/>
+                                    <circle cx="12" cy="18" r="3" stroke="#7C3AED" />
+                                    <path d="M12 15v1M12 21v1M10 18H9M15 18h-1" stroke="#7C3AED"/>
                                 </svg>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ function Services() {
                                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="url(#paint3_linear)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <defs>
                                         <linearGradient id="paint3_linear" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                            <stop stopColor="#a855f7" />
+                                            <stop stopColor="#7C3AED" />
                                             <stop offset="1" stopColor="#f43f5e" />
                                         </linearGradient>
                                     </defs>

@@ -64,27 +64,27 @@ const CategorizeIncome = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-auth-token': token 
+                    'x-auth-token': token
                 },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
                 const newIncome = await response.json();
-                
+
                 // Clear active states safely
                 setSource('');
                 setAmount('');
                 setStatus({ type: 'success', text: 'Income successfully mapped across Global ecosystem!' });
-                
+
                 // Natively repopulate the local view without an expensive API refetch
                 setIncomes([newIncome, ...incomes]);
-                
+
                 setTimeout(() => setStatus(null), 3000);
             } else {
                 setStatus({ type: 'error', text: 'Failed to record Income. Check database connection.' });
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             setStatus({ type: 'error', text: 'Database unreachable.' });
         }
@@ -100,7 +100,7 @@ const CategorizeIncome = () => {
             distributions[i.category] = (distributions[i.category] || 0) + i.amount;
         });
 
-        const colors = ['#3b82f6', '#a855f7', '#10b981', '#f59e0b', '#ec4899', '#6366f1', '#eab308', '#14b8a6'];
+        const colors = ['#A78BFA', '#7C3AED', '#10b981', '#f59e0b', '#ec4899', '#6366f1', '#eab308', '#14b8a6'];
         let colorIdx = 0;
 
         return Object.keys(distributions).map(cat => {
@@ -148,7 +148,7 @@ const CategorizeIncome = () => {
                     >
                         <div className="card-header">
                             <h3 className="card-title">Add Database Income</h3>
-                            <span style={{ fontSize: '11px', color: '#a855f7' }}>Global Ecosystem Sync Active</span>
+                            <span style={{ fontSize: '11px', color: '#7C3AED' }}>Global Ecosystem Sync Active</span>
                         </div>
                         <form className="auth-form" style={{ gap: '20px', padding: '0px' }}>
                             {status && (
@@ -157,32 +157,32 @@ const CategorizeIncome = () => {
                                 </div>
                             )}
                             <div className="form-group">
-                                <label style={{ color: '#888', marginBottom: '8px', display: 'block' }}>Source Identifier</label>
-                                <input 
-                                    type="text" 
-                                    placeholder="e.g. Monthly Salary, Freelance Fiverr" 
-                                    className="search-bar" 
-                                    style={{ width: '100%', color: 'white' }} 
+                                <label style={{ color: '#9CA3AF', marginBottom: '8px', display: 'block' }}>Source Identifier</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g. Monthly Salary, Freelance Fiverr"
+                                    className="search-bar"
+                                    style={{ width: '100%', color: '#1E1B4B' }}
                                     value={source}
                                     onChange={(e) => setSource(e.target.value)}
                                 />
                             </div>
                             <div className="form-group">
-                                <label style={{ color: '#888', marginBottom: '8px', display: 'block' }}>Deposit Amount ($)</label>
-                                <input 
-                                    type="number" 
-                                    placeholder="5000.00" 
-                                    className="search-bar" 
-                                    style={{ width: '100%', color: 'white' }} 
+                                <label style={{ color: '#9CA3AF', marginBottom: '8px', display: 'block' }}>Deposit Amount ($)</label>
+                                <input
+                                    type="number"
+                                    placeholder="5000.00"
+                                    className="search-bar"
+                                    style={{ width: '100%', color: '#1E1B4B' }}
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                 />
                             </div>
                             <div className="form-group">
-                                <label style={{ color: '#888', marginBottom: '8px', display: 'block' }}>Payment Channel</label>
-                                <select 
-                                    className="search-bar" 
-                                    style={{ width: '100%', color: 'white', background: '#111' }}
+                                <label style={{ color: '#9CA3AF', marginBottom: '8px', display: 'block' }}>Payment Channel</label>
+                                <select
+                                    className="search-bar"
+                                    style={{ width: '100%', color: '#1E1B4B', background: '#FFFFFF' }}
                                     value={paymentType}
                                     onChange={(e) => setPaymentType(e.target.value)}
                                 >
@@ -200,7 +200,7 @@ const CategorizeIncome = () => {
                                 className="primary-btn"
                                 style={{ width: '100%', padding: '16px', borderRadius: '50px', marginTop: '10px' }}
                             >
-                                Register Global Income
+                                Register  Income
                             </motion.button>
                         </form>
                     </motion.div>
@@ -218,29 +218,29 @@ const CategorizeIncome = () => {
                         <div style={{ marginTop: '15px' }}>
                             {/* Rendering the dynamic horizontal distribution block natively combining CSS explicit percents! */}
                             {loading ? (
-                                <div style={{ fontSize: '13px', color: '#666' }}>Aligning with Ledger Database...</div>
+                                <div style={{ fontSize: '13px', color: '#9CA3AF' }}>Aligning with Ledger Database...</div>
                             ) : grossIncome > 0 ? (
                                 <>
                                     <div style={{ display: 'flex', width: '100%', height: '12px', borderRadius: '6px', overflow: 'hidden' }}>
                                         {incomeBars.map((bar, i) => (
-                                            <div 
-                                                key={'vis'+i} 
-                                                style={{ width: bar.percentage + '%', background: bar.color }} 
-                                                title={bar.source + ': $' + bar.amount} 
+                                            <div
+                                                key={'vis' + i}
+                                                style={{ width: bar.percentage + '%', background: bar.color }}
+                                                title={bar.source + ': $' + bar.amount}
                                             />
                                         ))}
                                     </div>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginTop: '15px', fontSize: '11px', color: '#888' }}>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginTop: '15px', fontSize: '11px', color: '#9CA3AF' }}>
                                         {incomeBars.map((bar, i) => (
-                                            <span key={'leg'+i}>
-                                                <span style={{ color: bar.color, marginRight: '4px' }}>●</span> 
+                                            <span key={'leg' + i}>
+                                                <span style={{ color: bar.color, marginRight: '4px' }}>●</span>
                                                 {bar.source} ({bar.percentage}%)
                                             </span>
                                         ))}
                                     </div>
                                 </>
                             ) : (
-                                <div style={{ fontSize: '13px', color: '#666' }}>No active incomes registered securely onto your account yet.</div>
+                                <div style={{ fontSize: '13px', color: '#9CA3AF' }}>No active incomes registered securely onto your account yet.</div>
                             )}
                         </div>
                     </motion.div>
@@ -250,8 +250,8 @@ const CategorizeIncome = () => {
                         className="bento-item"
                         style={{ gridColumn: "span 3", gridRow: "span 2", background: 'rgba(59, 130, 246, 0.05)', borderColor: 'rgba(59, 130, 246, 0.2)' }}
                     >
-                        <h4 style={{ color: '#888', fontSize: '12px', letterSpacing: '1px' }}>LIFETIME GROSS INCOME</h4>
-                        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#3b82f6', marginTop: '10px' }}>
+                        <h4 style={{ color: '#9CA3AF', fontSize: '12px', letterSpacing: '1px' }}>LIFETIME GROSS INCOME</h4>
+                        <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#A78BFA', marginTop: '10px' }}>
                             ${loading ? '...' : grossIncome.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <p style={{ fontSize: '10px', color: '#555', marginTop: '5px' }}>Historically verified over MongoDB.</p>
@@ -261,13 +261,13 @@ const CategorizeIncome = () => {
                         className="bento-item"
                         style={{ gridColumn: "span 3", gridRow: "span 2" }}
                     >
-                        <h4 style={{ color: '#888', fontSize: '12px', letterSpacing: '1px' }}>RECENT INJECTIONS</h4>
+                        <h4 style={{ color: '#9CA3AF', fontSize: '12px', letterSpacing: '1px' }}>RECENT INJECTIONS</h4>
                         <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             {loading ? (
                                 <span style={{ fontSize: '12px', color: '#555' }}>Syncing ledgers...</span>
                             ) : incomes.length > 0 ? incomes.slice(0, 3).map((inc, i) => (
-                                <div key={'hist'+i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                                    <span style={{ color: '#ccc' }}>{inc.category}</span>
+                                <div key={'hist' + i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                                    <span style={{ color: '#6B7280' }}>{inc.category}</span>
                                     <span style={{ color: '#10b981', fontWeight: 'bold' }}>+${inc.amount}</span>
                                 </div>
                             )) : (

@@ -106,7 +106,7 @@ const FinancialReport = () => {
 
     // Dynamic Render Function based closely on user Dropdown rules
     const renderReportContent = () => {
-        if (loading) return <div style={{ color: '#888', padding: '50px', textAlign: 'center' }}>Aggregating Ledger Statements from Database...</div>;
+        if (loading) return <div style={{ color: '#9CA3AF', padding: '50px', textAlign: 'center' }}>Aggregating Ledger Statements from Database...</div>;
 
         switch (reportType) {
             case 'Expense Report':
@@ -116,17 +116,17 @@ const FinancialReport = () => {
                             <h3 className="card-title" style={{ marginBottom: '20px' }}>Spending by Category</h3>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
                                 {/* Simplified aesthetic ring for reports since native SVG mappings are expensive */}
-                                <div style={{ width: '160px', height: '160px', borderRadius: '50%', border: '15px solid #a855f7', borderTopColor: '#3b82f6', borderRightColor: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>
+                                <div style={{ width: '160px', height: '160px', borderRadius: '50%', border: '15px solid #7C3AED', borderTopColor: '#A78BFA', borderRightColor: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>
                                     ${totalExpenses.toLocaleString()}
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px', width: '100%', marginTop: '10px' }}>
                                     {expenseStats.breakdown.length > 0 ? expenseStats.breakdown.map((item, i) => (
-                                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#ccc', borderBottom: '1px solid #222', paddingBottom: '5px' }}>
+                                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#6B7280', borderBottom: '1px solid #E9E5F5', paddingBottom: '5px' }}>
                                             <span>{item.name}</span>
                                             <span style={{ fontWeight: 'bold' }}>${item.amount.toLocaleString()}</span>
                                         </div>
                                     )) : (
-                                        <span style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>No expenses found in this period.</span>
+                                        <span style={{ fontSize: '12px', color: '#9CA3AF', textAlign: 'center' }}>No expenses found in this period.</span>
                                     )}
                                 </div>
                             </div>
@@ -135,19 +135,19 @@ const FinancialReport = () => {
                         <div className="glass-card-sleek" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <div className="card-header" style={{ marginBottom: '10px' }}>
                                 <h3 className="card-title">Expense Ledger</h3>
-                                <span style={{ fontSize: '12px', color: '#666' }}>{timePeriod}</span>
+                                <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{timePeriod}</span>
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto', maxHeight: '300px' }}>
                                 {filteredTx.filter(t => t.type === 'expense').length > 0 ? filteredTx.filter(t => t.type === 'expense').map((t, idx) => (
                                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <span style={{ fontWeight: '600', fontSize: '14px' }}>{t.merchant || t.description || 'General Expense'}</span>
-                                            <span style={{ fontSize: '12px', color: '#888' }}>{t.date.split('T')[0]} • {t.category}</span>
+                                            <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{t.date.split('T')[0]} • {t.category}</span>
                                         </div>
                                         <div style={{ fontWeight: 'bold', color: '#ef4444' }}>-${t.amount.toLocaleString()}</div>
                                     </div>
                                 )) : (
-                                    <div style={{ textAlign: 'center', color: '#666', marginTop: '40px' }}>No ledger data available.</div>
+                                    <div style={{ textAlign: 'center', color: '#9CA3AF', marginTop: '40px' }}>No ledger data available.</div>
                                 )}
                             </div>
                         </div>
@@ -158,18 +158,18 @@ const FinancialReport = () => {
                 return (
                     <div className="glass-card-sleek" style={{ padding: '30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                         <h3 className="card-title" style={{ textAlign: 'center', fontSize: '24px', marginBottom: '5px' }}>Income Statement (P&L)</h3>
-                        <p style={{ textAlign: 'center', color: '#888', fontSize: '13px', marginBottom: '30px' }}>For the period of: {timePeriod}</p>
+                        <p style={{ textAlign: 'center', color: '#9CA3AF', fontSize: '13px', marginBottom: '30px' }}>For the period of: {timePeriod}</p>
                         
                         {/* Revenue Block */}
                         <div style={{ marginBottom: '20px' }}>
                             <h4 style={{ color: '#10b981', borderBottom: '1px solid rgba(16,185,129,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Revenues</h4>
                             {filteredTx.filter(t => t.type === 'income').map((t, i) => (
-                                <div key={'inc'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#ccc' }}>
+                                <div key={'inc'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                     <span>{t.category || t.description || 'Income Stream'}</span>
                                     <span>${t.amount.toLocaleString()}</span>
                                 </div>
                             ))}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '15px', fontWeight: 'bold', color: 'white', marginTop: '10px', borderTop: '1px dashed #333' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '15px', fontWeight: 'bold', color: '#1E1B4B', marginTop: '10px', borderTop: '1px dashed #333' }}>
                                 <span>Total Gross Revenue</span>
                                 <span>${totalIncomes.toLocaleString()}</span>
                             </div>
@@ -179,12 +179,12 @@ const FinancialReport = () => {
                         <div style={{ marginBottom: '30px' }}>
                             <h4 style={{ color: '#ef4444', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Expenses</h4>
                             {expenseStats.breakdown.map((item, i) => (
-                                <div key={'exp'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#ccc' }}>
+                                <div key={'exp'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                     <span>{item.name}</span>
                                     <span>${item.amount.toLocaleString()}</span>
                                 </div>
                             ))}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '15px', fontWeight: 'bold', color: 'white', marginTop: '10px', borderTop: '1px dashed #333' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '15px', fontWeight: 'bold', color: '#1E1B4B', marginTop: '10px', borderTop: '1px dashed #333' }}>
                                 <span>Total Operating Expenses</span>
                                 <span>${totalExpenses.toLocaleString()}</span>
                             </div>
@@ -204,17 +204,17 @@ const FinancialReport = () => {
                 return (
                     <div className="glass-card-sleek" style={{ padding: '30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                         <h3 className="card-title" style={{ textAlign: 'center', fontSize: '24px', marginBottom: '5px' }}>Balance Sheet</h3>
-                        <p style={{ textAlign: 'center', color: '#888', fontSize: '13px', marginBottom: '30px' }}>As of {new Date().toLocaleDateString()} (All-Time Snapshot)</p>
+                        <p style={{ textAlign: 'center', color: '#9CA3AF', fontSize: '13px', marginBottom: '30px' }}>As of {new Date().toLocaleDateString()} (All-Time Snapshot)</p>
                         
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', flex: 1 }}>
                             {/* Assets Column */}
                             <div>
-                                <h4 style={{ color: '#3b82f6', borderBottom: '1px solid rgba(59,130,246,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Assets</h4>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#ccc' }}>
+                                <h4 style={{ color: '#A78BFA', borderBottom: '1px solid rgba(59,130,246,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Assets</h4>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                     <span>Cash Equivalents (Savings)</span>
                                     <span>${allTimeAssets.toLocaleString()}</span>
                                 </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '16px', fontWeight: 'bold', color: 'white', marginTop: '20px', borderTop: '1px solid #444' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '16px', fontWeight: 'bold', color: '#1E1B4B', marginTop: '20px', borderTop: '1px solid #444' }}>
                                     <span>Total Assets</span>
                                     <span>${allTimeAssets.toLocaleString()}</span>
                                 </div>
@@ -224,15 +224,15 @@ const FinancialReport = () => {
                             <div>
                                 <h4 style={{ color: '#ef4444', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Liabilities</h4>
                                 {splits.filter(s => s.status === 'pending').map((s, i) => (
-                                    <div key={'liab'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#ccc' }}>
+                                    <div key={'liab'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                         <span>Debt: {s.description}</span>
                                         <span>${parseFloat(s.pendingAmount).toFixed(2)}</span>
                                     </div>
                                 ))}
                                 {splits.filter(s => s.status === 'pending').length === 0 && (
-                                    <div style={{ padding: '8px 0', fontSize: '13px', color: '#666' }}>No active liabilities / debts found.</div>
+                                    <div style={{ padding: '8px 0', fontSize: '13px', color: '#9CA3AF' }}>No active liabilities / debts found.</div>
                                 )}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '16px', fontWeight: 'bold', color: 'white', marginTop: '20px', borderTop: '1px solid #444' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', fontSize: '16px', fontWeight: 'bold', color: '#1E1B4B', marginTop: '20px', borderTop: '1px solid #444' }}>
                                     <span>Total Liabilities</span>
                                     <span>${parseFloat(activeLiabilities).toLocaleString()}</span>
                                 </div>
@@ -243,7 +243,7 @@ const FinancialReport = () => {
                         <div style={{ marginTop: 'auto', paddingTop: '30px' }}>
                             <div style={{ padding: '20px', background: 'rgba(168,85,247,0.1)', borderRadius: '12px', border: '1px solid rgba(168,85,247,0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#d8b4fe' }}>Total Equity (Net Worth)</span>
-                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'white' }}>
+                                <span style={{ fontSize: '24px', fontWeight: 'bold', color: '#1E1B4B' }}>
                                     ${parseFloat(totalEquity).toLocaleString()}
                                 </span>
                             </div>
@@ -275,18 +275,18 @@ const FinancialReport = () => {
                     >
                         ← Back to HUB
                     </motion.button>
-                    <h2 style={{ margin: 0, color: 'white', fontSize: '24px' }}>Financial Statements</h2>
+                    <h2 style={{ margin: 0, color: '#1E1B4B', fontSize: '24px' }}>Financial Statements</h2>
                     <div style={{ width: '80px' }}></div> 
                 </div>
 
                 {/* Control Filters Section */}
                 <div className="glass-card-sleek report-controls" style={{ padding: '20px', display: 'flex', gap: '20px', alignItems: 'flex-end', flexShrink: 0 }}>
                     <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', color: '#ccc', marginBottom: '8px', fontSize: '14px' }}>Reporting Period</label>
+                        <label style={{ display: 'block', color: '#6B7280', marginBottom: '8px', fontSize: '14px' }}>Reporting Period</label>
                         <select 
                             value={timePeriod}
                             onChange={(e) => setTimePeriod(e.target.value)}
-                            style={{ width: '100%', padding: '10px', background: '#111', border: '1px solid #333', color: 'white', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
+                            style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
                         >
                             <option>Last 30 Days</option>
                             <option>Last 3 Months</option>
@@ -294,11 +294,11 @@ const FinancialReport = () => {
                         </select>
                     </div>
                     <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', color: '#ccc', marginBottom: '8px', fontSize: '14px' }}>Statement Type</label>
+                        <label style={{ display: 'block', color: '#6B7280', marginBottom: '8px', fontSize: '14px' }}>Statement Type</label>
                         <select 
                             value={reportType}
                             onChange={(e) => setReportType(e.target.value)}
-                            style={{ width: '100%', padding: '10px', background: '#111', border: '1px solid #333', color: 'white', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
+                            style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
                         >
                             <option>Expense Report</option>
                             <option>Income Statement</option>
@@ -310,7 +310,7 @@ const FinancialReport = () => {
                         <button 
                             onClick={() => window.print()}
                             className="primary-btn" 
-                            style={{ padding: '10px 20px', background: '#10b981', border: 'none', borderRadius: '8px', color: 'white', cursor: 'pointer', display: 'flex', gap: '8px' }}
+                            style={{ padding: '10px 20px', background: '#10b981', border: 'none', borderRadius: '8px', color: '#1E1B4B', cursor: 'pointer', display: 'flex', gap: '8px' }}
                         >
                             📄 Print PDF
                         </button>

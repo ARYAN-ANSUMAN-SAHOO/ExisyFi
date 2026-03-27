@@ -51,14 +51,14 @@ function AboutUs() {
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <defs>
                                     <linearGradient id="ab0" x1="3" y1="3" x2="21" y2="21" gradientUnits="userSpaceOnUse">
-                                        <stop stopColor="#a855f7" />
-                                        <stop offset="1" stopColor="#3b82f6" />
+                                        <stop stopColor="#7C3AED" />
+                                        <stop offset="1" stopColor="#A78BFA" />
                                     </linearGradient>
                                 </defs>
                                 {/* Rocket */}
-                                <path d="M12 2C12 2 7 6 7 12l5 2 5-2c0-6-5-10-5-10z" stroke="url(#ab0)" fill="rgba(168,85,247,0.1)" />
+                                <path d="M12 2C12 2 7 6 7 12l5 2 5-2c0-6-5-10-5-10z" stroke="url(#ab0)" fill="rgba(124,58,237,0.1)" />
                                 <path d="M7 12l-2 4 3-1M17 12l2 4-3-1" stroke="url(#ab0)" />
-                                <circle cx="12" cy="12" r="2" stroke="#a855f7" fill="rgba(168,85,247,0.2)" />
+                                <circle cx="12" cy="12" r="2" stroke="#7C3AED" fill="rgba(124,58,237,0.2)" />
                                 <path d="M10 20c0 1 1 2 2 2s2-1 2-2v-2h-4v2z" stroke="url(#ab0)" fill="rgba(59,130,246,0.1)" />
                             </svg>
                         </div>
@@ -74,13 +74,13 @@ function AboutUs() {
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <defs>
                                     <linearGradient id="ab1" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                        <stop stopColor="#3b82f6" />
-                                        <stop offset="1" stopColor="#a855f7" />
+                                        <stop stopColor="#A78BFA" />
+                                        <stop offset="1" stopColor="#7C3AED" />
                                     </linearGradient>
                                 </defs>
                                 {/* Eye */}
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="url(#ab1)" fill="rgba(59,130,246,0.07)" />
-                                <circle cx="12" cy="12" r="3" stroke="#a855f7" fill="rgba(168,85,247,0.15)" />
+                                <circle cx="12" cy="12" r="3" stroke="#7C3AED" fill="rgba(124,58,237,0.15)" />
                                 {/* Chart upward arrow */}
                                 <polyline points="4 18 8 14 12 16 18 10" stroke="url(#ab1)" />
                                 <polyline points="15 10 18 10 18 13" stroke="url(#ab1)" />
@@ -97,18 +97,18 @@ function AboutUs() {
                     <div className="team-card">
                         {/* Circuit decoration */}
                         <svg className="team-card-circuit" viewBox="0 0 120 100" fill="none" preserveAspectRatio="none">
-                            <line x1="10" y1="20" x2="80" y2="20" stroke="#a855f7" strokeWidth="0.8"/>
-                            <line x1="80" y1="20" x2="80" y2="50" stroke="#a855f7" strokeWidth="0.8"/>
-                            <circle cx="80" cy="50" r="3" fill="#a855f7"/>
-                            <line x1="80" y1="50" x2="110" y2="50" stroke="#3b82f6" strokeWidth="0.8"/>
-                            <line x1="30" y1="70" x2="100" y2="70" stroke="#3b82f6" strokeWidth="0.8"/>
-                            <circle cx="30" cy="70" r="2.5" fill="#3b82f6"/>
-                            <line x1="50" y1="85" x2="110" y2="85" stroke="#a855f7" strokeWidth="0.8"/>
+                            <line x1="10" y1="20" x2="80" y2="20" stroke="#7C3AED" strokeWidth="0.8"/>
+                            <line x1="80" y1="20" x2="80" y2="50" stroke="#7C3AED" strokeWidth="0.8"/>
+                            <circle cx="80" cy="50" r="3" fill="#7C3AED"/>
+                            <line x1="80" y1="50" x2="110" y2="50" stroke="#A78BFA" strokeWidth="0.8"/>
+                            <line x1="30" y1="70" x2="100" y2="70" stroke="#A78BFA" strokeWidth="0.8"/>
+                            <circle cx="30" cy="70" r="2.5" fill="#A78BFA"/>
+                            <line x1="50" y1="85" x2="110" y2="85" stroke="#7C3AED" strokeWidth="0.8"/>
                         </svg>
 
                         <div className="team-photo-wrapper">
                             <div className="team-photo-ring">
-                                <img src="/aryan.png" alt="Aryan Ansuman Sahoo" onError={(e) => { e.target.style.display='none'; e.target.parentNode.style.background='linear-gradient(135deg,#3b82f6,#a855f7)'; }} />
+                                <img src="/aryan.png" alt="Aryan Ansuman Sahoo" onError={(e) => { e.target.style.display='none'; e.target.parentNode.style.background='linear-gradient(135deg,#A78BFA,#7C3AED)'; }} />
                             </div>
                         </div>
                         <div className="team-info">
@@ -120,18 +120,18 @@ function AboutUs() {
                     {/* Saswat */}
                     <div className="team-card">
                         <svg className="team-card-circuit" viewBox="0 0 120 100" fill="none" preserveAspectRatio="none">
-                            <line x1="10" y1="30" x2="70" y2="30" stroke="#3b82f6" strokeWidth="0.8"/>
-                            <line x1="70" y1="30" x2="70" y2="60" stroke="#3b82f6" strokeWidth="0.8"/>
-                            <circle cx="70" cy="60" r="3" fill="#3b82f6"/>
-                            <line x1="70" y1="60" x2="110" y2="60" stroke="#a855f7" strokeWidth="0.8"/>
-                            <line x1="20" y1="75" x2="90" y2="75" stroke="#a855f7" strokeWidth="0.8"/>
-                            <circle cx="90" cy="75" r="2.5" fill="#a855f7"/>
-                            <line x1="40" y1="88" x2="110" y2="88" stroke="#3b82f6" strokeWidth="0.8"/>
+                            <line x1="10" y1="30" x2="70" y2="30" stroke="#A78BFA" strokeWidth="0.8"/>
+                            <line x1="70" y1="30" x2="70" y2="60" stroke="#A78BFA" strokeWidth="0.8"/>
+                            <circle cx="70" cy="60" r="3" fill="#A78BFA"/>
+                            <line x1="70" y1="60" x2="110" y2="60" stroke="#7C3AED" strokeWidth="0.8"/>
+                            <line x1="20" y1="75" x2="90" y2="75" stroke="#7C3AED" strokeWidth="0.8"/>
+                            <circle cx="90" cy="75" r="2.5" fill="#7C3AED"/>
+                            <line x1="40" y1="88" x2="110" y2="88" stroke="#A78BFA" strokeWidth="0.8"/>
                         </svg>
 
                         <div className="team-photo-wrapper">
                             <div className="team-photo-ring">
-                                <img src="/saswat.png" alt="Saswat Sumanjeet" onError={(e) => { e.target.style.display='none'; e.target.parentNode.style.background='linear-gradient(135deg,#a855f7,#3b82f6)'; }} />
+                                <img src="/saswat.png" alt="Saswat Sumanjeet" onError={(e) => { e.target.style.display='none'; e.target.parentNode.style.background='linear-gradient(135deg,#7C3AED,#A78BFA)'; }} />
                             </div>
                         </div>
                         <div className="team-info">

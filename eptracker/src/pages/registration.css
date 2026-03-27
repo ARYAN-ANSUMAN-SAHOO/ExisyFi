@@ -2,9 +2,9 @@
 .register-container {
     display: flex;
     min-height: 100vh;
-    background-color: #000;
+    background-color: #FAFAFE;
     font-family: 'Inter', sans-serif;
-    color: white;
+    color: #1E1B4B;
 }
 
 /* LEFT SIDE - BRANDING */
@@ -12,7 +12,7 @@
     flex: 1;
     margin: 20px;
     border-radius: 30px;
-    background: linear-gradient(135deg, #1a1a1a, #000);
+    background: #7C3AED;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -20,16 +20,16 @@
     justify-content: center;
     align-items: center;
     padding: 40px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
 }
 
-/* Gradient Blob Effect */
 .register-left::before {
     content: '';
     position: absolute;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(255, 122, 162, 0.3) 0%, rgba(127, 255, 212, 0.1) 50%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(167, 139, 250, 0.1) 50%, transparent 70%);
     top: -100px;
     left: -100px;
     filter: blur(40px);
@@ -65,10 +65,11 @@
     font-size: 42px;
     margin-bottom: 10px;
     line-height: 1.2;
+    color: white;
 }
 
 .register-left p {
-    color: #888;
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 40px;
 }
 
@@ -81,30 +82,30 @@
 }
 
 .step-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.15);
     padding: 15px 20px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     gap: 15px;
     text-align: left;
-    color: #666;
+    color: rgba(255, 255, 255, 0.7);
     border: 1px solid transparent;
     transition: 0.3s;
 }
 
 .step-item.active {
     background: white;
-    color: black;
+    color: #1E1B4B;
     font-weight: 600;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
 .step-number {
     width: 24px;
     height: 24px;
-    background: #333;
-    color: #888;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -113,7 +114,7 @@
 }
 
 .step-item.active .step-number {
-    background: black;
+    background: #7C3AED;
     color: white;
 }
 
@@ -134,10 +135,11 @@
 .register-header h2 {
     font-size: 28px;
     margin-bottom: 8px;
+    color: #1E1B4B;
 }
 
 .register-header p {
-    color: #666;
+    color: #9CA3AF;
     font-size: 14px;
 }
 
@@ -150,11 +152,11 @@
 
 .social-btn {
     flex: 1;
-    background: #111;
-    border: 1px solid #333;
+    background: #FFFFFF;
+    border: 1px solid #E9E5F5;
     padding: 12px;
     border-radius: 8px;
-    color: white;
+    color: #1E1B4B;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,14 +167,14 @@
 }
 
 .social-btn:hover {
-    border-color: #555;
-    background: #161616;
+    border-color: #7C3AED;
+    background: #F5F3FF;
 }
 
 .divider {
     display: flex;
     align-items: center;
-    color: #444;
+    color: #9CA3AF;
     font-size: 12px;
     margin-bottom: 30px;
 }
@@ -182,7 +184,7 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: #222;
+    background: #E9E5F5;
 }
 
 .divider span {
@@ -191,7 +193,6 @@
 
 /* Form Fields */
 .form-row {
-
     display: flex;
     gap: 20px;
     margin-bottom: 20px;
@@ -208,39 +209,36 @@
 .form-group label {
     font-size: 13px;
     font-weight: 600;
-    color: #ccc;
+    color: #6B7280;
 }
 
 .form-input {
     width: 100%;
     box-sizing: border-box;
-    background: #111;
-    border: 1px solid #333;
+    background: #F5F3FF;
+    border: 1px solid #E9E5F5;
     padding: 14px;
     border-radius: 8px;
-    color: white;
+    color: #1E1B4B;
     font-size: 14px;
     outline: none;
     transition: all 0.3s ease-in-out;
 }
 
 .form-input::placeholder {
-    color: #444;
+    color: #9CA3AF;
 }
 
 .form-input:hover {
-    border-color: #555;
-    background: #1a1a1a;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    border-color: #A78BFA;
+    background: #FFFFFF;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.05);
 }
 
 .form-input:focus {
-    border-color: #7fffd4;
-    background: #161616;
-    box-shadow:
-        0 0 0 2px rgba(127, 255, 212, 0.2),
-        0 0 15px rgba(255, 122, 162, 0.3),
-        inset 0 0 10px rgba(127, 255, 212, 0.1);
+    border-color: #7C3AED;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .password-group {
@@ -252,13 +250,13 @@
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #666;
+    color: #9CA3AF;
     cursor: pointer;
 }
 
 .password-hint {
     font-size: 11px;
-    color: #666;
+    color: #9CA3AF;
     margin-top: -10px;
     margin-bottom: 30px;
 }
@@ -266,8 +264,8 @@
 .submit-btn {
     width: 100%;
     padding: 16px;
-    background: white;
-    color: black;
+    background: #7C3AED;
+    color: white;
     border: none;
     border-radius: 8px;
     font-weight: bold;
@@ -277,20 +275,20 @@
 }
 
 .submit-btn:hover {
-    background: #e0e0e0;
+    background: #6D28D9;
     transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
 }
 
 .login-link {
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
-    color: #666;
+    color: #9CA3AF;
 }
 
 .login-link a {
-    color: white;
-    /* Or accent pink */
+    color: #7C3AED;
     text-decoration: none;
     font-weight: 600;
 }
@@ -304,12 +302,9 @@
     .register-container {
         flex-direction: column;
     }
-
     .register-left {
         display: none;
-        /* Hide illustrative side on mobile for simplicity or stack it */
     }
-
     .register-right {
         padding: 40px 20px;
     }

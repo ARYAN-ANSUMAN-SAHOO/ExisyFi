@@ -1,6 +1,6 @@
 .about-page {
-  background: black;
-  color: white;
+  background: #FAFAFE;
+  color: #1E1B4B;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -13,7 +13,7 @@
   left: 50%;
   width: 80%;
   height: 80%;
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1) 0%, transparent 65%);
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.04) 0%, transparent 65%);
   transform: translate(-50%, -50%);
   z-index: 0;
   pointer-events: none;
@@ -24,7 +24,6 @@
   z-index: 1;
 }
 
-/* Header */
 .about-header {
   text-align: center;
   margin-bottom: 44px;
@@ -35,15 +34,15 @@
   font-weight: 800;
   margin-bottom: 14px;
   letter-spacing: 0.5px;
+  color: #1E1B4B;
 }
 
 .about-header p {
-  color: #a0a0a0;
+  color: #6B7280;
   font-size: 17px;
   margin: 0 auto;
 }
 
-/* Mission / Vision Cards */
 .about-cards-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -52,32 +51,31 @@
 }
 
 .about-info-card {
-  background: rgba(18, 18, 28, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #FFFFFF;
+  border: 1px solid #E9E5F5;
   border-radius: 18px;
-  padding: 28px 28px;
+  padding: 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .about-info-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
 }
 
 .about-info-text h3 {
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 10px;
-  color: #fff;
+  color: #1E1B4B;
 }
 
 .about-info-text p {
-  color: #a0a0a0;
+  color: #6B7280;
   font-size: 14px;
   line-height: 1.6;
   max-width: 360px;
@@ -92,12 +90,11 @@
   justify-content: center;
 }
 
-/* Team Section */
 .about-team-title {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 24px;
-  color: #fff;
+  color: #1E1B4B;
 }
 
 .about-team-row {
@@ -107,14 +104,13 @@
 }
 
 .team-card {
-  background: rgba(18, 18, 28, 0.75);
+  background: #FFFFFF;
   border-radius: 18px;
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  padding: 28px 28px;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  padding: 28px;
   display: flex;
   align-items: center;
   gap: 24px;
-  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -124,16 +120,15 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.07) 0%, rgba(59, 130, 246, 0.04) 100%);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.03) 0%, rgba(167, 139, 250, 0.02) 100%);
   pointer-events: none;
 }
 
 .team-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 8px 30px rgba(124, 58, 237, 0.1);
 }
 
-/* Circuit decoration lines */
 .team-card-circuit {
   position: absolute;
   right: 0;
@@ -152,9 +147,7 @@
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border: 2px solid transparent;
-  background: linear-gradient(black, black) padding-box,
-              linear-gradient(135deg, #3b82f6, #a855f7) border-box;
+  border: 3px solid #7C3AED;
   padding: 3px;
   position: relative;
   z-index: 1;
@@ -176,27 +169,25 @@
 .team-info h4 {
   font-size: 17px;
   font-weight: 700;
-  color: #fff;
+  color: #1E1B4B;
   margin-bottom: 5px;
 }
 
 .team-info p {
   font-size: 13px;
-  color: #a0a0a0;
+  color: #6B7280;
 }
 
-/* Email footer */
 .about-email-line {
   text-align: right;
   margin-top: 32px;
-  color: #888;
+  color: #9CA3AF;
   font-size: 13px;
 }
 
-/* Active nav */
 .about-active-link {
-  color: #fff !important;
-  border-bottom: 2px solid #a855f7;
+  color: #7C3AED !important;
+  border-bottom: 2px solid #7C3AED;
   padding-bottom: 4px;
 }
 

@@ -5,7 +5,7 @@ import './dashboard.css';
 
 const RecordExpense = () => {
     const navigate = useNavigate();
-    
+
     const [amount, setAmount] = useState('');
     const [category, setCategory] = useState('Food');
     const [merchant, setMerchant] = useState('');
@@ -46,7 +46,7 @@ const RecordExpense = () => {
             setStatus({ type: 'error', text: 'Amount, Merchant, and Date are required!' });
             return;
         }
-        
+
         const token = localStorage.getItem('token');
         setStatus({ type: 'info', text: 'Saving to database...' });
 
@@ -63,29 +63,29 @@ const RecordExpense = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-auth-token': token 
+                    'x-auth-token': token
                 },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
                 const newTransaction = await response.json();
-                
+
                 // Clear form
                 setAmount('');
                 setMerchant('');
                 setDate('');
                 setStatus({ type: 'success', text: 'Expense permanently saved to database!' });
-                
+
                 // Update specific local view instantly
                 setTransactions([newTransaction, ...transactions]);
-                
+
                 // Remove success notification after 3 seconds
                 setTimeout(() => setStatus(null), 3000);
             } else {
                 setStatus({ type: 'error', text: 'Failed to record expense. Check your inputs.' });
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             setStatus({ type: 'error', text: 'Database unreachable.' });
         }
@@ -149,9 +149,9 @@ const RecordExpense = () => {
                             <h3 className="fp-section-title">New Database Transaction</h3>
                             <form className="auth-form" style={{ gap: '0', padding: '0' }}>
                                 {status && (
-                                   <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', textAlign: 'center', backgroundColor: status.type === 'error' ? '#fee2e2' : status.type === 'success' ? '#dcfce7' : '#e0f2fe', color: status.type === 'error' ? '#991b1b' : status.type === 'success' ? '#166534' : '#075985' }}>
+                                    <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', textAlign: 'center', backgroundColor: status.type === 'error' ? '#fee2e2' : status.type === 'success' ? '#dcfce7' : '#e0f2fe', color: status.type === 'error' ? '#991b1b' : status.type === 'success' ? '#166534' : '#075985' }}>
                                         {status.text}
-                                   </div>
+                                    </div>
                                 )}
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '25px' }}>
                                     <div className="form-group">
@@ -162,7 +162,7 @@ const RecordExpense = () => {
                                             type="number"
                                             placeholder="0.00"
                                             className="search-bar"
-                                            style={{ width: '100%', color: 'white' }}
+                                            style={{ width: '100%', color: '#1E1B4B' }}
                                             value={amount}
                                             onChange={(e) => setAmount(e.target.value)}
                                         />
@@ -173,7 +173,7 @@ const RecordExpense = () => {
                                             variants={inputVariants}
                                             whileFocus="focus"
                                             className="search-bar"
-                                            style={{ width: '100%', color: 'white' }}
+                                            style={{ width: '100%', color: '#1E1B4B' }}
                                             value={category}
                                             onChange={(e) => setCategory(e.target.value)}
                                         >
@@ -193,7 +193,7 @@ const RecordExpense = () => {
                                         type="text"
                                         placeholder="Where did you spend?"
                                         className="search-bar"
-                                        style={{ width: '100%', color: 'white' }}
+                                        style={{ width: '100%', color: '#1E1B4B' }}
                                         value={merchant}
                                         onChange={(e) => setMerchant(e.target.value)}
                                     />
@@ -205,7 +205,7 @@ const RecordExpense = () => {
                                         whileFocus="focus"
                                         type="date"
                                         className="search-bar"
-                                        style={{ width: '100%', color: 'white' }}
+                                        style={{ width: '100%', color: '#1E1B4B' }}
                                         value={date}
                                         onChange={(e) => setDate(e.target.value)}
                                     />
@@ -218,7 +218,7 @@ const RecordExpense = () => {
                                     className="primary-btn"
                                     style={{ marginTop: '30px', width: '100%', padding: '16px', borderRadius: '50px', fontSize: '16px', fontWeight: 'bold' }}
                                 >
-                                    Push Securely to Database
+                                    Add Expense
                                 </motion.button>
                             </form>
                         </div>
@@ -227,17 +227,17 @@ const RecordExpense = () => {
                     {/* Sidebar Stats Section completely verified via DB fetches */}
                     <div className="full-page-sidebar">
                         <div>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#fff' }}>Profile Active Limits</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1E1B4B' }}>Profile Active Limits</h3>
 
                             <div className="fp-stat-item">
                                 <div className="fp-stat-label">Verified Daily Usage</div>
-                                <div className="fp-stat-value" style={{ color: '#3b82f6' }}>${totalToday.toFixed(2)}</div>
+                                <div className="fp-stat-value" style={{ color: '#A78BFA' }}>${totalToday.toFixed(2)}</div>
                                 <div style={{ height: '6px', background: '#222', borderRadius: '3px', overflow: 'hidden', marginTop: '10px' }}>
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${usagePercent}%` }}
                                         transition={{ duration: 1 }}
-                                        style={{ height: '100%', background: '#a855f7' }}
+                                        style={{ height: '100%', background: '#7C3AED' }}
                                     />
                                 </div>
                                 <p style={{ fontSize: '12px', color: '#555', marginTop: '8px' }}>{usagePercent.toFixed(0)}% of daily database limit ($50)</p>
@@ -245,13 +245,13 @@ const RecordExpense = () => {
                         </div>
 
                         <div>
-                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#fff' }}>Database Ledger</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1E1B4B' }}>Database Ledger</h3>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 {transactions.filter(t => t.type === 'expense').slice(0, 3).map((item, i) => (
-                                    <div key={i} className="fp-recent-item" style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #222' }}>
+                                    <div key={i} className="fp-recent-item" style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #E9E5F5' }}>
                                         <div>
-                                            <div style={{ fontSize: '15px', fontWeight: '500', color: 'white' }}>{item.merchant || item.description || 'Unknown'}</div>
-                                            <div style={{ fontSize: '12px', color: '#888' }}>{item.category} • {item.date && item.date.split('T')[0]}</div>
+                                            <div style={{ fontSize: '15px', fontWeight: '500', color: '#1E1B4B' }}>{item.merchant || item.description || 'Unknown'}</div>
+                                            <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{item.category} • {item.date && item.date.split('T')[0]}</div>
                                         </div>
                                         <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '16px' }}>-${item.amount.toFixed(2)}</div>
                                     </div>

@@ -1,6 +1,6 @@
 .contact-page {
-  background: black;
-  color: white;
+  background: #FAFAFE;
+  color: #1E1B4B;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
@@ -13,7 +13,7 @@
   left: 50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, transparent 65%);
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.06) 0%, transparent 65%);
   transform: translate(-50%, -50%);
   z-index: 0;
   pointer-events: none;
@@ -24,7 +24,6 @@
   z-index: 1;
 }
 
-/* Header */
 .contact-header {
   text-align: center;
   margin-bottom: 40px;
@@ -35,10 +34,11 @@
   font-weight: 800;
   margin-bottom: 16px;
   letter-spacing: 1px;
+  color: #1E1B4B;
 }
 
 .contact-header p {
-  color: #a0a0a0;
+  color: #6B7280;
   font-size: 17px;
   max-width: 700px;
   margin: 0 auto;
@@ -46,26 +46,23 @@
   text-align: left;
 }
 
-/* Form Container */
 .contact-form-wrapper {
   max-width: 540px;
   margin: 0 auto;
-  background: rgba(18, 18, 24, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #FFFFFF;
+  border: 1px solid #E9E5F5;
   border-radius: 20px;
   padding: 32px 32px 28px;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(168, 85, 247, 0.08);
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.05);
 }
 
 .contact-form-wrapper h3 {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 22px;
-  color: #fff;
+  color: #1E1B4B;
 }
 
-/* Field rows with icon */
 .contact-field-row {
   display: flex;
   align-items: center;
@@ -76,11 +73,11 @@
 .contact-field-row input,
 .contact-field-row textarea {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(100, 149, 237, 0.4);
+  background: #F5F3FF;
+  border: 1px solid #E9E5F5;
   padding: 12px 16px;
   border-radius: 8px;
-  color: white;
+  color: #1E1B4B;
   font-size: 14px;
   font-family: inherit;
   outline: none;
@@ -89,13 +86,13 @@
 
 .contact-field-row input:focus,
 .contact-field-row textarea:focus {
-  border-color: rgba(168, 85, 247, 0.7);
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
+  border-color: #7C3AED;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
 .contact-field-row input::placeholder,
 .contact-field-row textarea::placeholder {
-  color: #666;
+  color: #9CA3AF;
 }
 
 .contact-field-row textarea {
@@ -112,12 +109,11 @@
   flex-shrink: 0;
 }
 
-/* Send Button */
 .contact-send-btn {
   width: 100%;
   padding: 14px;
   margin-top: 16px;
-  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  background: #7C3AED;
   border: none;
   border-radius: 10px;
   color: white;
@@ -129,22 +125,20 @@
 }
 
 .contact-send-btn:hover {
-  opacity: 0.9;
+  background: #6D28D9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.25);
 }
 
-/* Email footer line */
 .contact-email-line {
   text-align: center;
   margin-top: 22px;
-  color: #888;
+  color: #9CA3AF;
   font-size: 14px;
 }
 
-/* Active nav */
 .contact-active-link {
-  color: #fff !important;
-  border-bottom: 2px solid #a855f7;
+  color: #7C3AED !important;
+  border-bottom: 2px solid #7C3AED;
   padding-bottom: 4px;
 }

@@ -183,7 +183,7 @@ const RotatingText = () => (
         d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
         fill="transparent"
       />
-      <text fill="white" fontSize="18" fontWeight="200">
+      <text fill="#6D28D9" fontSize="18" fontWeight="200">
         <textPath xlinkHref="#circlePath">
           Budget Planner • Spend Smart • Save More • Better Future •
           Budget Planner • Spend Smart • Save More
