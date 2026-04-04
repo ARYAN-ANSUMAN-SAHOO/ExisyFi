@@ -15,6 +15,11 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  goalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BudgetGoal',
+    required: false
+  },
   category: {
     type: String,
     required: true,

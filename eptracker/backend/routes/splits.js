@@ -78,4 +78,52 @@ router.put('/:id/settle', auth, async (req, res) => {
     }
 });
 
+// @route   PUT /api/splits/:id
+// @desc    Update an active split bill base properties
+// @access  Private
+router.put('/:id', auth, async (req, res) => {
+  try {
+    let split = await SplitBill.findById(req.params.id);
+    if (!split) return res.status(404).json({ message: 'Bill not found' });
+    if (split.userId.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
+
+    const { description, totalAmount, participants, includeMyself } = req.body;
+    
+    // Re-verify inputs
+    if (!description || !totalAmount || !participants || participants < 1) {
+        return res.status(400).json({ message: 'Please provide valid split parameters.' });
+    }
+
+    const divider = includeMyself ? (participants + 1) : participants;
+    const calculatedPendingAmount = totalAmount / divider;
+
+    split = await SplitBill.findByIdAndUpdate(
+      req.params.id,
+      { $set: { description, totalAmount, participants: divider, pendingAmount: calculatedPendingAmount } },
+      { new: true }
+    );
+    res.json(split);
+  } catch (err) {
+    console.error('Update Split Error:', err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   DELETE /api/splits/:id
+// @desc    Delete a split bill
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const split = await SplitBill.findById(req.params.id);
+    if (!split) return res.status(404).json({ message: 'Bill not found' });
+    if (split.userId.toString() !== req.user.id) return res.status(401).json({ message: 'Not authorized' });
+
+    await split.deleteOne();
+    res.json({ message: 'Bill removed' });
+  } catch (err) {
+    console.error('Delete Split Error:', err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
