@@ -133,7 +133,7 @@ const CategorizeIncome = () => {
                         className="primary-btn"
                         style={{ padding: '8px 16px' }}
                     >
-                        ← Back to HUB
+                        ← Back to Dashboard
                     </motion.button>
                     <h2 className="gradient-text">Income Streams</h2>
                 </header>
@@ -147,8 +147,8 @@ const CategorizeIncome = () => {
                         animate={{ x: 0, opacity: 1 }}
                     >
                         <div className="card-header">
-                            <h3 className="card-title">Add Database Income</h3>
-                            <span style={{ fontSize: '11px', color: '#7C3AED' }}>Global Ecosystem Sync Active</span>
+                            <h3 className="card-title">Add Income</h3>
+                            <span style={{ fontSize: '11px', color: '#7C3AED' }}>Sync Active</span>
                         </div>
                         <form className="auth-form" style={{ gap: '20px', padding: '0px' }}>
                             {status && (
@@ -213,7 +213,7 @@ const CategorizeIncome = () => {
                         animate={{ x: 0, opacity: 1 }}
                     >
                         <div className="card-header">
-                            <h3 className="card-title">Dynamic Mathematical Breakdown</h3>
+                            <h3 className="card-title">Total Income Breakdown</h3>
                         </div>
                         <div style={{ marginTop: '15px' }}>
                             {/* Rendering the dynamic horizontal distribution block natively combining CSS explicit percents! */}

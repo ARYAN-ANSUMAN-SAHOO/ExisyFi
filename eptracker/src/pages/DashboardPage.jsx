@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from '../context/CurrencyContext';
+import DropdownMenu from '../components/DropdownMenu';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 import './dashboard.css';
 
 // SVG Icons
@@ -40,10 +43,13 @@ const DashboardPage = () => {
     // #6 Search Bar State
     const [searchQuery, setSearchQuery] = useState('');
     const [showSearchResults, setShowSearchResults] = useState(false);
+    const [unseenCount, setUnseenCount] = useState(0);
     const searchRef = useRef(null);
     // #7 Settings Modal State
     const [showSettingsModal, setShowSettingsModal] = useState(false);
-    const [currency, setCurrency] = useState(localStorage.getItem('currency') || 'USD');
+    const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    const [passwordStatus, setPasswordStatus] = useState({ type: '', msg: '' });
+    const { currency, setCurrency, symbol: currSymbol, formatAmount, convertNumber } = useCurrency();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -66,9 +72,25 @@ const DashboardPage = () => {
                 const txRes = await fetch('http://localhost:5000/api/transactions', {
                     headers: { 'x-auth-token': token }
                 });
-                if (txRes.ok) {
-                    setTransactions(await txRes.json());
-                }
+                const txData = txRes.ok ? await txRes.json() : [];
+                if (txRes.ok) setTransactions(txData);
+
+                // Fetch Goals and Splits for notification count
+                const goalsRes = await fetch('http://localhost:5000/api/goals', { headers: { 'x-auth-token': token } });
+                const splitsRes = await fetch('http://localhost:5000/api/splits', { headers: { 'x-auth-token': token } });
+                const goalsData = goalsRes.ok ? await goalsRes.json() : [];
+                const splitsData = splitsRes.ok ? await splitsRes.json() : [];
+
+                // Calculate unseen notifications
+                const lastSeen = localStorage.getItem('lastNotificationSeen') || 0;
+                const lastSeenTime = new Date(lastSeen).getTime();
+
+                let count = 0;
+                txData.forEach(t => { if (new Date(t.date).getTime() > lastSeenTime) count++; });
+                goalsData.forEach(g => { if (new Date(g.createdAt).getTime() > lastSeenTime) count++; });
+                splitsData.forEach(s => { if (new Date(s.createdAt).getTime() > lastSeenTime) count++; });
+
+                setUnseenCount(count);
             } catch (err) {
                 console.error("Dashboard fetch error:", err);
             }
@@ -93,6 +115,34 @@ const DashboardPage = () => {
         navigate('/login');
     };
 
+    const handleUpdatePassword = async (e) => {
+        e.preventDefault();
+        setPasswordStatus({ type: '', msg: '' });
+        if (passwordData.newPassword !== passwordData.confirmPassword) {
+            setPasswordStatus({ type: 'error', msg: 'Passwords do not match' });
+            return;
+        }
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/update-password', {
+                method: 'PUT',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'x-auth-token': localStorage.getItem('token')
+                },
+                body: JSON.stringify(passwordData)
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setPasswordStatus({ type: 'success', msg: data.message });
+                setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            } else {
+                setPasswordStatus({ type: 'error', msg: data.message });
+            }
+        } catch (err) {
+            setPasswordStatus({ type: 'error', msg: 'Failed to update password' });
+        }
+    };
+
     // Core financial calculations
     const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
     const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
@@ -109,8 +159,8 @@ const DashboardPage = () => {
     });
 
     const topExpenses = Object.entries(categoryTotals)
-        .map(([label, val]) => ({ label, val }))
-        .sort((a, b) => b.val - a.val)
+        .map(([label, val]) => ({ label, rawVal: val, val: convertNumber(val) }))
+        .sort((a, b) => b.rawVal - a.rawVal)
         .slice(0, 10);
 
     const maxVal = Math.max(...topExpenses.map(e => e.val), 1);
@@ -154,15 +204,15 @@ const DashboardPage = () => {
 
     const searchResults = getSearchResults();
 
-    // Currency symbol helper
-    const currSymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₹';
 
     return (
         <div className="dashboard-container">
             {/* Sidebar */}
             <aside className="sidebar">
                 <div className="sidebar-logo">
-                    <div className="logo-icon">E</div>
+                    <div className="logo-ring">
+                        <div className="logo-dot"></div>
+                    </div>
                     <span>ExisyFi</span>
                 </div>
 
@@ -184,7 +234,7 @@ const DashboardPage = () => {
                     </a>
                     <a onClick={() => navigate('/notifications')} className="nav-item">
                         <Icons.Bell /> Notifications
-                        <span className="badge">5</span>
+                        {unseenCount > 0 && <span className="badge">{unseenCount}</span>}
                     </a>
                     <a onClick={() => navigate('/categorize-income')} className="nav-item">
                         <Icons.Wallet /> Categorize Income
@@ -204,8 +254,8 @@ const DashboardPage = () => {
 
                 {/* #1 Profile with default SVG avatar */}
                 <div className="user-profile">
-                    <div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F3FF', border: '2px solid #7C3AED' }}>
-                        <Icons.ProfilePic />
+                    <div className="avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F3FF', border: '2px solid #7C3AED', overflow: 'hidden' }}>
+                        {user && user.image ? <img src={user.image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Icons.ProfilePic />}
                     </div>
                     <div className="user-info">
                         <span className="name">{user ? user.firstName + ' ' + user.lastName : 'Loading...'}</span>
@@ -250,7 +300,7 @@ const DashboardPage = () => {
                                         </div>
                                         {r.type === 'transaction' && (
                                             <span style={{ color: r.txType === 'income' ? '#22c55e' : '#ef4444', fontWeight: 'bold', fontSize: '13px' }}>
-                                                {r.txType === 'income' ? '+' : '-'}{currSymbol}{r.amount}
+                                                {r.txType === 'income' ? '+' : '-'}{currSymbol}{formatAmount(r.amount)}
                                             </span>
                                         )}
                                     </div>
@@ -258,7 +308,7 @@ const DashboardPage = () => {
                             </div>
                         )}
                     </div>
-                    <button onClick={handleLogout} className="primary-btn" style={{ padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', background: '#ef4444' }}>
+                    <button onClick={handleLogout} className="primary-btn logout-btn" style={{ padding: '8px 16px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Icons.LogOut /> Logout
                     </button>
                 </header>
@@ -267,37 +317,48 @@ const DashboardPage = () => {
                 <div className="stats-grid">
                     <div className="stat-card">
                         <div className="stat-header">
-                            <div className="icon-box">{currSymbol}</div>
-                            <span className="menu-dots">...</span>
+                            <div className="icon-box"><span style={{ fontWeight: 'bold' }}>{currSymbol}</span></div>
+                            <DropdownMenu options={[
+                                { label: 'View Income Streams', action: () => navigate('/categorize-income') },
+                                { label: 'Add Monthly Income', action: () => navigate('/categorize-income') }
+                            ]} />
                         </div>
                         <div className="stat-label" style={{ color: '#9CA3AF', fontSize: '12px' }}>TOTAL INCOME</div>
-                        <div className="stat-value">{currSymbol}{totalIncome.toLocaleString()}</div>
+                        <div className="stat-value">{currSymbol}{formatAmount(totalIncome)}</div>
                         <div className="stat-change up">↗ 100% (Baseline)</div>
                     </div>
 
                     <div className="stat-card accent">
                         <div className="stat-header">
                             <div className="icon-box"><Icons.Wallet /></div>
-                            <span className="menu-dots">...</span>
+                            <DropdownMenu triggerIcon={<span className="menu-dots" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '20px', lineHeight: '0.5' }}>...</span>} options={[
+                                { label: 'View Expense Report', action: () => navigate('/financial-report') },
+                                { label: 'Record Expense', action: () => navigate('/record-expense') },
+                            ]} />
                         </div>
                         <div className="stat-label">TOTAL EXPENSE</div>
-                        <div className="stat-value">{currSymbol}{totalExpense.toLocaleString()}</div>
+                        <div className="stat-value">{currSymbol}{formatAmount(totalExpense)}</div>
                         <div className="stat-change down">↘ {expensePercent}% of income</div>
                     </div>
 
                     <div className="stat-card">
                         <div className="stat-header">
                             <div className="icon-box"><Icons.Chart /></div>
-                            {/* #2 View Details triggers the savings modal */}
-                            <button
-                                onClick={() => setShowSavingsModal(true)}
-                                style={{ background: '#F5F3FF', border: '1px solid #E9E5F5', color: '#7C3AED', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: '600' }}
-                            >
-                                View Details
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button
+                                    onClick={() => setShowSavingsModal(true)}
+                                    style={{ background: '#F5F3FF', border: '1px solid #E9E5F5', color: '#7C3AED', padding: '4px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', fontWeight: '600' }}
+                                >
+                                    View Details
+                                </button>
+                                <DropdownMenu options={[
+                                    { label: 'View Savings Breakdown', action: () => setShowSavingsModal(true) },
+                                    { label: 'Adjust Budget Goal', action: () => navigate('/set-budget') }
+                                ]} />
+                            </div>
                         </div>
                         <div className="stat-label" style={{ color: '#9CA3AF', fontSize: '12px' }}>TOTAL SAVINGS</div>
-                        <div className="stat-value" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
+                        <div className="stat-value" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{currSymbol}{formatAmount(totalSavings)}</div>
                         <div className="stat-change" style={{ color: totalSavings >= 0 ? '#22c55e' : '#ef4444' }}>{totalSavings >= 0 ? '↗' : '↘'} {savingsPercent}% saved</div>
                     </div>
                 </div>
@@ -309,15 +370,23 @@ const DashboardPage = () => {
                             <h3 className="card-title">Top Expense Sources</h3>
                             <span style={{ color: '#9CA3AF' }}>...</span>
                         </div>
-                        <div className="bar-chart-container">
-                            {topExpenses.length > 0 ? topExpenses.map((item, i) => (
-                                <div className="bar-group" key={i}>
-                                    <div className="bar highlight" style={{ height: (item.val / maxVal) * 100 + '%', opacity: 1 }}>
-                                        <div className="bar-value-pop">{currSymbol}{item.val}</div>
-                                    </div>
-                                    <span className="bar-label">{item.label}</span>
-                                </div>
-                            )) : (
+                        <div className="bar-chart-container" style={{ width: '100%', height: '220px', display: 'block', paddingTop: '0' }}>
+                            {topExpenses.length > 0 ? (
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={topExpenses} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E9E5F5" />
+                                        <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#9CA3AF' }} dy={10} />
+                                        <Tooltip cursor={{ fill: '#F5F3FF' }} contentStyle={{ borderRadius: '12px', border: '1px solid #E9E5F5', boxShadow: '0 4px 15px rgba(124,58,237,0.1)' }} formatter={(val) => [`${currSymbol}${val.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}`, 'Amount']} />
+                                        <Bar dataKey="val" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                                            {
+                                                topExpenses.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={index === 0 ? '#7C3AED' : '#A78BFA'} />
+                                                ))
+                                            }
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            ) : (
                                 <div style={{ color: '#9CA3AF', padding: '20px' }}>No expense data recorded.</div>
                             )}
                         </div>
@@ -339,15 +408,15 @@ const DashboardPage = () => {
                             <div className="pie-legend">
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#7C3AED' }}></div>
-                                    <span>Income {currSymbol}{totalIncome.toLocaleString()}</span>
+                                    <span>Income {currSymbol}{formatAmount(totalIncome)}</span>
                                 </div>
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#A78BFA' }}></div>
-                                    <span>Expense {currSymbol}{totalExpense.toLocaleString()}</span>
+                                    <span>Expense {currSymbol}{formatAmount(totalExpense)}</span>
                                 </div>
                                 <div className="legend-item">
                                     <div className="dot" style={{ background: '#E9E5F5', border: '1px solid #DDD6FE' }}></div>
-                                    <span>Savings {currSymbol}{totalSavings.toLocaleString()}</span>
+                                    <span>Savings {currSymbol}{formatAmount(totalSavings)}</span>
                                 </div>
                             </div>
                         </div>
@@ -399,13 +468,13 @@ const DashboardPage = () => {
                         </div>
                         <div style={{ marginBottom: '15px', padding: '15px', background: totalSavings >= 0 ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)', borderRadius: '12px', textAlign: 'center' }}>
                             <span style={{ fontSize: '13px', color: '#6B7280' }}>Net Financial Position</span>
-                            <div style={{ fontSize: '28px', fontWeight: 'bold', color: totalSavings >= 0 ? '#22c55e' : '#ef4444', marginTop: '5px' }}>{currSymbol}{totalSavings.toLocaleString()}</div>
+                            <div style={{ fontSize: '28px', fontWeight: 'bold', color: totalSavings >= 0 ? '#22c55e' : '#ef4444', marginTop: '5px' }}>{currSymbol}{formatAmount(totalSavings)}</div>
                         </div>
                         <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '15px', letterSpacing: '1px' }}>MAJOR EXPENSE DRAINS</h4>
                         {savingsBreakdown.length > 0 ? savingsBreakdown.map((item, i) => (
                             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #E9E5F5', fontSize: '14px' }}>
                                 <span style={{ color: '#1E1B4B' }}>{item.category}</span>
-                                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>-{currSymbol}{item.spent.toLocaleString()}</span>
+                                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>-{currSymbol}{formatAmount(item.spent)}</span>
                             </div>
                         )) : (
                             <div style={{ color: '#9CA3AF', textAlign: 'center', padding: '20px' }}>No expense categories found.</div>
@@ -434,8 +503,8 @@ const DashboardPage = () => {
                             <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>PROFILE</h4>
                             <div style={{ padding: '15px', background: '#F5F3FF', borderRadius: '12px', border: '1px solid #E9E5F5' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#F5F3FF', border: '2px solid #7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Icons.ProfilePic />
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#F5F3FF', border: '2px solid #7C3AED', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                                        {user && user.image ? <img src={user.image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <Icons.ProfilePic />}
                                     </div>
                                     <div>
                                         <div style={{ fontWeight: '600', color: '#1E1B4B' }}>{user ? user.firstName + ' ' + user.lastName : '...'}</div>
@@ -450,7 +519,7 @@ const DashboardPage = () => {
                             <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>CURRENCY</h4>
                             <select
                                 value={currency}
-                                onChange={(e) => { setCurrency(e.target.value); localStorage.setItem('currency', e.target.value); }}
+                                onChange={(e) => setCurrency(e.target.value)}
                                 style={{ width: '100%', padding: '10px', background: '#F5F3FF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
                             >
                                 <option value="USD">$ USD — US Dollar</option>
@@ -460,7 +529,7 @@ const DashboardPage = () => {
                         </div>
 
                         {/* Theme */}
-                        <div>
+                        <div style={{ marginBottom: '25px' }}>
                             <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>THEME</h4>
                             <div style={{ padding: '12px 15px', background: '#F5F3FF', borderRadius: '12px', border: '1px solid #E9E5F5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span style={{ fontSize: '14px', color: '#6B7280' }}>Light Mode</span>
@@ -468,6 +537,42 @@ const DashboardPage = () => {
                                     <div style={{ width: '16px', height: '16px', background: 'white', borderRadius: '50%', position: 'absolute', top: '2px', right: '2px' }}></div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Security Section */}
+                        <div style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '5px' }}>
+                            <h4 style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '12px', letterSpacing: '1px' }}>SECURITY</h4>
+                            {passwordStatus.msg && (
+                                <div style={{ fontSize: '12px', color: passwordStatus.type === 'success' ? '#22c55e' : '#ef4444', marginBottom: '10px' }}>
+                                    {passwordStatus.msg}
+                                </div>
+                            )}
+                            <form onSubmit={handleUpdatePassword} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <input 
+                                    type="password" 
+                                    placeholder="Current Password" 
+                                    value={passwordData.currentPassword}
+                                    onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                                    style={{ width: '100%', padding: '8px', background: '#F5F3FF', border: '1px solid #E9E5F5', borderRadius: '6px', fontSize: '13px', outline: 'none' }}
+                                />
+                                <input 
+                                    type="password" 
+                                    placeholder="New Password" 
+                                    value={passwordData.newPassword}
+                                    onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                                    style={{ width: '100%', padding: '8px', background: '#F5F3FF', border: '1px solid #E9E5F5', borderRadius: '6px', fontSize: '13px', outline: 'none' }}
+                                />
+                                <input 
+                                    type="password" 
+                                    placeholder="Confirm New Password" 
+                                    value={passwordData.confirmPassword}
+                                    onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                                    style={{ width: '100%', padding: '8px', background: '#F5F3FF', border: '1px solid #E9E5F5', borderRadius: '6px', fontSize: '13px', outline: 'none' }}
+                                />
+                                <button type="submit" className="primary-btn" style={{ padding: '10px', fontSize: '13px' }}>
+                                    Update Password
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

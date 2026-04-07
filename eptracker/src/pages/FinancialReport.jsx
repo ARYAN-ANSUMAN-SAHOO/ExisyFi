@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './dashboard.css';
 
+const REPORT_COLORS = ['#7C3AED', '#10b981', '#f59e0b', '#f43f5e', '#0ea5e9', '#d946ef', '#8b5cf6', '#14b8a6', '#f97316', '#64748b'];
+
 const FinancialReport = () => {
+
     const navigate = useNavigate();
 
     const [transactions, setTransactions] = useState([]);
@@ -26,7 +29,7 @@ const FinancialReport = () => {
                     fetch('http://localhost:5000/api/transactions', { headers: { 'x-auth-token': token } }),
                     fetch('http://localhost:5000/api/splits', { headers: { 'x-auth-token': token } })
                 ]);
-                
+
                 if (txRes.ok && spRes.ok) {
                     setTransactions(await txRes.json());
                     setSplits(await spRes.json());
@@ -58,7 +61,7 @@ const FinancialReport = () => {
     };
 
     const filteredTx = getFilteredTransactions();
-    
+
     // Core Mathematical Formulas aggregating data types strictly based on filtered bounds
     const totalExpenses = filteredTx.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
     const totalIncomes = filteredTx.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
@@ -110,20 +113,68 @@ const FinancialReport = () => {
 
         switch (reportType) {
             case 'Expense Report':
+                // Assign colors and calculate gradient
+                const breakdownWithColors = expenseStats.breakdown.map((item, idx) => ({
+                    ...item,
+                    color: REPORT_COLORS[idx % REPORT_COLORS.length]
+                }));
+
+                let cumulativePercent = 0;
+                const gradientSteps = breakdownWithColors.map(item => {
+                    const percent = totalExpenses > 0 ? (item.amount / totalExpenses) * 100 : 0;
+                    const start = cumulativePercent;
+                    cumulativePercent += percent;
+                    return `${item.color} ${start}% ${cumulativePercent}%`;
+                }).join(', ');
+
+                const donutGradient = totalExpenses > 0
+                    ? `conic-gradient(${gradientSteps})`
+                    : '#E9E5F5';
+
                 return (
                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 1.5fr', gap: '20px', flex: 1 }}>
                         <div className="glass-card-sleek" style={{ padding: '20px', display: 'flex', flexDirection: 'column' }}>
                             <h3 className="card-title" style={{ marginBottom: '20px' }}>Spending by Category</h3>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-                                {/* Simplified aesthetic ring for reports since native SVG mappings are expensive */}
-                                <div style={{ width: '160px', height: '160px', borderRadius: '50%', border: '15px solid #7C3AED', borderTopColor: '#A78BFA', borderRightColor: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 'bold' }}>
-                                    ${totalExpenses.toLocaleString()}
+                                {/* Dynamic Donut Ring using Conic Gradient */}
+                                <div style={{
+                                    width: '180px',
+                                    height: '180px',
+                                    borderRadius: '50%',
+                                    background: donutGradient,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative'
+                                }}>
+                                    {/* The Inner Hole */}
+                                    <div style={{
+                                        width: '140px',
+                                        height: '140px',
+                                        borderRadius: '50%',
+                                        background: '#FFFFFF',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)'
+                                    }}>
+                                        <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 'normal' }}>Total Spent</span>
+                                        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#1E1B4B' }}>
+                                            ${totalExpenses.toLocaleString()}
+                                        </div>
+                                    </div>
                                 </div>
+
+                                {/* Legend Section */}
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px', width: '100%', marginTop: '10px' }}>
-                                    {expenseStats.breakdown.length > 0 ? expenseStats.breakdown.map((item, i) => (
+                                    {breakdownWithColors.length > 0 ? breakdownWithColors.map((item, i) => (
                                         <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#6B7280', borderBottom: '1px solid #E9E5F5', paddingBottom: '5px' }}>
-                                            <span>{item.name}</span>
-                                            <span style={{ fontWeight: 'bold' }}>${item.amount.toLocaleString()}</span>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: item.color }}></div>
+                                                <span>{item.name}</span>
+                                            </div>
+                                            <span style={{ fontWeight: '600', color: '#1E1B4B' }}>${item.amount.toLocaleString()}</span>
                                         </div>
                                     )) : (
                                         <span style={{ fontSize: '12px', color: '#9CA3AF', textAlign: 'center' }}>No expenses found in this period.</span>
@@ -132,9 +183,10 @@ const FinancialReport = () => {
                             </div>
                         </div>
 
+
                         <div className="glass-card-sleek" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <div className="card-header" style={{ marginBottom: '10px' }}>
-                                <h3 className="card-title">Expense Ledger</h3>
+                                <h3 className="card-title">Expenses</h3>
                                 <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{timePeriod}</span>
                             </div>
                             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto', maxHeight: '300px' }}>
@@ -159,12 +211,12 @@ const FinancialReport = () => {
                     <div className="glass-card-sleek" style={{ padding: '30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                         <h3 className="card-title" style={{ textAlign: 'center', fontSize: '24px', marginBottom: '5px' }}>Income Statement (P&L)</h3>
                         <p style={{ textAlign: 'center', color: '#9CA3AF', fontSize: '13px', marginBottom: '30px' }}>For the period of: {timePeriod}</p>
-                        
+
                         {/* Revenue Block */}
                         <div style={{ marginBottom: '20px' }}>
                             <h4 style={{ color: '#10b981', borderBottom: '1px solid rgba(16,185,129,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Revenues</h4>
                             {filteredTx.filter(t => t.type === 'income').map((t, i) => (
-                                <div key={'inc'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
+                                <div key={'inc' + i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                     <span>{t.category || t.description || 'Income Stream'}</span>
                                     <span>${t.amount.toLocaleString()}</span>
                                 </div>
@@ -179,7 +231,7 @@ const FinancialReport = () => {
                         <div style={{ marginBottom: '30px' }}>
                             <h4 style={{ color: '#ef4444', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Expenses</h4>
                             {expenseStats.breakdown.map((item, i) => (
-                                <div key={'exp'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
+                                <div key={'exp' + i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                     <span>{item.name}</span>
                                     <span>${item.amount.toLocaleString()}</span>
                                 </div>
@@ -205,7 +257,7 @@ const FinancialReport = () => {
                     <div className="glass-card-sleek" style={{ padding: '30px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                         <h3 className="card-title" style={{ textAlign: 'center', fontSize: '24px', marginBottom: '5px' }}>Balance Sheet</h3>
                         <p style={{ textAlign: 'center', color: '#9CA3AF', fontSize: '13px', marginBottom: '30px' }}>As of {new Date().toLocaleDateString()} (All-Time Snapshot)</p>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', flex: 1 }}>
                             {/* Assets Column */}
                             <div>
@@ -224,7 +276,7 @@ const FinancialReport = () => {
                             <div>
                                 <h4 style={{ color: '#ef4444', borderBottom: '1px solid rgba(239,68,68,0.3)', paddingBottom: '10px', marginBottom: '15px' }}>Liabilities</h4>
                                 {splits.filter(s => s.status === 'pending').map((s, i) => (
-                                    <div key={'liab'+i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
+                                    <div key={'liab' + i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', fontSize: '14px', color: '#6B7280' }}>
                                         <span>Debt: {s.description}</span>
                                         <span>${parseFloat(s.pendingAmount).toFixed(2)}</span>
                                     </div>
@@ -262,7 +314,7 @@ const FinancialReport = () => {
             style={{ padding: '20px', height: '100vh', overflow: 'hidden' }}
         >
             <style>{printCSS}</style>
-            
+
             <div className="main-content" style={{ marginLeft: 0, width: '100%', maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '20px', height: '100%' }}>
 
                 {/* Header Section */}
@@ -273,17 +325,17 @@ const FinancialReport = () => {
                         className="primary-btn"
                         style={{ padding: '8px 16px', fontSize: '14px' }}
                     >
-                        ← Back to HUB
+                        ← Back to Dashboard
                     </motion.button>
                     <h2 style={{ margin: 0, color: '#1E1B4B', fontSize: '24px' }}>Financial Statements</h2>
-                    <div style={{ width: '80px' }}></div> 
+                    <div style={{ width: '80px' }}></div>
                 </div>
 
                 {/* Control Filters Section */}
                 <div className="glass-card-sleek report-controls" style={{ padding: '20px', display: 'flex', gap: '20px', alignItems: 'flex-end', flexShrink: 0 }}>
                     <div style={{ flex: 1 }}>
                         <label style={{ display: 'block', color: '#6B7280', marginBottom: '8px', fontSize: '14px' }}>Reporting Period</label>
-                        <select 
+                        <select
                             value={timePeriod}
                             onChange={(e) => setTimePeriod(e.target.value)}
                             style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
@@ -295,7 +347,7 @@ const FinancialReport = () => {
                     </div>
                     <div style={{ flex: 1 }}>
                         <label style={{ display: 'block', color: '#6B7280', marginBottom: '8px', fontSize: '14px' }}>Statement Type</label>
-                        <select 
+                        <select
                             value={reportType}
                             onChange={(e) => setReportType(e.target.value)}
                             style={{ width: '100%', padding: '10px', background: '#FFFFFF', border: '1px solid #E9E5F5', color: '#1E1B4B', borderRadius: '8px', outline: 'none', cursor: 'pointer' }}
@@ -307,9 +359,9 @@ const FinancialReport = () => {
                     </div>
                     <div>
                         {/* Download Report utilizing Native Browser PDF Printing via Window object! */}
-                        <button 
+                        <button
                             onClick={() => window.print()}
-                            className="primary-btn" 
+                            className="primary-btn"
                             style={{ padding: '10px 20px', background: '#10b981', border: 'none', borderRadius: '8px', color: '#1E1B4B', cursor: 'pointer', display: 'flex', gap: '8px' }}
                         >
                             📄 Print PDF

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import FormInput from '../components/FormInput';
+import { GoogleLogin } from '@react-oauth/google';
 import Home from './home';
 import './home.css'; // Reuse global styles
 import './auth.css'; // Auth specific styles
@@ -48,6 +49,28 @@ const LoginPage = () => {
         }
     };
 
+    const handleGoogleSuccess = async (credentialResponse) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: credentialResponse.credential })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                navigate('/dashboard');
+            } else {
+                setLoginError(data.message || 'Google Login failed');
+            }
+        } catch (err) {
+            console.error("Google Login error:", err);
+            setLoginError('Google Login failed. Please try again.');
+        }
+    };
+
     return (
         <>
             <div className="login-background">
@@ -60,6 +83,23 @@ const LoginPage = () => {
                     </h2>
 
                     {loginError && <div className="error-message">{loginError}</div>}
+
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={() => setLoginError('Google Login Failed')}
+                            theme="outline"
+                            size="large"
+                            shape="pill"
+                            width="100%"
+                        />
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: '#9CA3AF', fontSize: '12px' }}>
+                        <div style={{ flex: 1, height: '1px', background: '#E9E5F5' }}></div>
+                        <span style={{ padding: '0 10px' }}>Or</span>
+                        <div style={{ flex: 1, height: '1px', background: '#E9E5F5' }}></div>
+                    </div>
 
                     <form onSubmit={handleLogin} noValidate>
                         <FormInput

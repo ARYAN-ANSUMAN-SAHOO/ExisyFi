@@ -5,6 +5,7 @@
     background-color: #FAFAFE;
     color: #1E1B4B;
     font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.5s ease-out;
 }
 
 /* SIDEBAR */
@@ -30,17 +31,21 @@
     color: #1E1B4B;
 }
 
-.logo-icon {
-    width: 32px;
-    height: 32px;
-    background: #7C3AED;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: white;
-    font-weight: 900;
+.logo-ring {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #7C3AED;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-dot {
+  width: 10px;
+  height: 10px;
+  background: #7C3AED;
+  border-radius: 50%;
 }
 
 .nav-menu {
@@ -515,4 +520,62 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* SEGMENTED CONTROL GOALS/EXPENSES */
+.segmented-control {
+    display: flex;
+    background: #F5F3FF;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #E9E5F5;
+}
+
+.segmented-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #6B7280;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative; /* Add this */
+}
+
+.segmented-btn.active {
+    color: #7C3AED;
+}
+
+.segmented-pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFFFFF;
+    border-radius: 8px;
+    z-index: -1;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.1);
+}
+
+/* LOGOUT BUTTON STYLES */
+.primary-btn.logout-btn {
+    background: #E5E7EB; /* Grey box */
+    color: #7C3AED;      /* Purple text */
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    /* Kill any inherited animations/delays from other pages */
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+.primary-btn.logout-btn:hover {
+    background: #ef4444 !important; /* Red box on hover */
+    color: #FFFFFF !important;      /* White text on hover */
 }

@@ -13,6 +13,8 @@ const SplitTransaction = () => {
 
     const [splits, setSplits] = useState([]);
     const [status, setStatus] = useState(null);
+    const [editModalData, setEditModalData] = useState(null);
+    const [editStatus, setEditStatus] = useState(null);
 
     // Initial Database Fetch on Page Load
     useEffect(() => {
@@ -37,6 +39,55 @@ const SplitTransaction = () => {
         } catch (err) {
             console.error('Fetch error:', err);
             setStatus({ type: 'error', text: 'Database unreachable.' });
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this split bill?")) return;
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`http://localhost:5000/api/splits/${id}`, {
+                method: 'DELETE',
+                headers: { 'x-auth-token': token }
+            });
+            if (res.ok) {
+                setSplits(splits.filter(s => s._id !== id));
+            } else {
+                setStatus({ type: 'error', text: 'Failed to delete split.' });
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleUpdate = async () => {
+        const token = localStorage.getItem('token');
+        setEditStatus('Updating...');
+        try {
+            const res = await fetch(`http://localhost:5000/api/splits/${editModalData._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': token
+                },
+                body: JSON.stringify({
+                    description: editModalData.description,
+                    totalAmount: parseFloat(editModalData.totalAmount),
+                    participants: parseInt(editModalData.participants) || 1,
+                    includeMyself: false // Force exact divider count
+                })
+            });
+            if (res.ok) {
+                const updated = await res.json();
+                setSplits(splits.map(s => s._id === updated._id ? updated : s));
+                setEditModalData(null);
+                setEditStatus(null);
+            } else {
+                setEditStatus('Failed to update split.');
+            }
+        } catch (err) {
+            console.error(err);
+            setEditStatus('Server error.');
         }
     };
 
@@ -148,7 +199,7 @@ const SplitTransaction = () => {
                     {/* Main Splitter Section */}
                     <div className="full-page-main">
                         <div>
-                            <h3 className="fp-section-title">Record Database Split</h3>
+                            <h3 className="fp-section-title">Record Split</h3>
                             <form className="auth-form" style={{ gap: '0', padding: '0' }}>
                                 {status && (
                                     <div style={{ padding: '10px', marginBottom: '15px', borderRadius: '4px', textAlign: 'center', backgroundColor: status.type === 'error' ? '#fee2e2' : status.type === 'success' ? '#dcfce7' : '#e0f2fe', color: status.type === 'error' ? '#991b1b' : status.type === 'success' ? '#166534' : '#075985' }}>
@@ -236,13 +287,16 @@ const SplitTransaction = () => {
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', alignItems: 'center' }}>
                                             <span style={{ color: '#9CA3AF', fontSize: '12px' }}>Total: ${bill.totalAmount} ({bill.participants} ways)</span>
-                                            {/* Explored mapping logic: "Mark as Paid" disappears it! */}
-                                            <button
-                                                onClick={() => handleMarkAsPaid(bill._id)}
-                                                style={{ padding: '4px 8px', background: '#22c55e', color: '#1E1B4B', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
-                                            >
-                                                Mark as Paid ✓
-                                            </button>
+                                            <div style={{ display: 'flex', gap: '5px' }}>
+                                                <button onClick={() => setEditModalData({ ...bill })} style={{ padding: '4px 8px', background: '#eab308', color: '#1E1B4B', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}>Edit</button>
+                                                <button onClick={() => handleDelete(bill._id)} style={{ padding: '4px 8px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}>Delete</button>
+                                                <button
+                                                    onClick={() => handleMarkAsPaid(bill._id)}
+                                                    style={{ padding: '4px 8px', background: '#22c55e', color: '#1E1B4B', border: 'none', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                                                >
+                                                    Mark as Paid ✓
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )) : (
@@ -255,6 +309,24 @@ const SplitTransaction = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Edit Modal */}
+            {editModalData && (
+                <div onClick={() => setEditModalData(null)} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div onClick={(e) => e.stopPropagation()} style={{ background: 'white', padding: '30px', borderRadius: '12px', width: '400px', maxWidth: '90%' }}>
+                        <h3 style={{ marginBottom: '20px', color: '#1E1B4B' }}>Edit Split Bill</h3>
+                        {editStatus && <div style={{ color: 'red', marginBottom: '10px' }}>{editStatus}</div>}
+                        <input type="text" value={editModalData.description} onChange={(e) => setEditModalData({ ...editModalData, description: e.target.value })} placeholder="Description" className="search-bar" style={{ width: '100%', marginBottom: '15px', color: '#000' }} />
+                        <input type="number" value={editModalData.totalAmount} onChange={(e) => setEditModalData({ ...editModalData, totalAmount: e.target.value })} placeholder="Total Amount" className="search-bar" style={{ width: '100%', marginBottom: '15px', color: '#000' }} />
+                        <input type="number" value={editModalData.participants} onChange={(e) => setEditModalData({ ...editModalData, participants: e.target.value })} placeholder="Total Participants / Ways" className="search-bar" style={{ width: '100%', marginBottom: '20px', color: '#000' }} />
+
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                            <button onClick={() => setEditModalData(null)} style={{ padding: '10px', background: '#ccc', borderRadius: '5px', cursor: 'pointer', border: 'none' }}>Cancel</button>
+                            <button onClick={handleUpdate} className="primary-btn" style={{ padding: '10px 20px', borderRadius: '5px' }}>Update</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </motion.div>
     );
 };

@@ -7,6 +7,9 @@ const Notifications = () => {
     const navigate = useNavigate();
     const [alerts, setAlerts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [emailAlerts, setEmailAlerts] = useState(true);
+    const [pushAlerts, setPushAlerts] = useState(false);
+
 
     // Initial Multi-Database Fetch on Page Load
     useEffect(() => {
@@ -29,7 +32,7 @@ const Notifications = () => {
                     const transactions = await txRes.json();
                     const goals = await goalsRes.json();
                     const splits = await splitsRes.json();
-                    
+
                     aggregateNotifications(transactions, goals, splits);
                 } else {
                     console.error('Failed to authenticate fetching channels.');
@@ -42,7 +45,13 @@ const Notifications = () => {
         };
 
         fetchAllData();
+
+        // Mark as seen immediately on mount
+        localStorage.setItem('lastNotificationSeen', new Date().toISOString());
+        // Use a window event to notify other tabs (like DashboardPage) if needed, 
+        // though simpler to just re-check localStorage on Dashboard mount.
     }, [navigate]);
+
 
     // Algorithmic core logic combining disparate MongoDB schemas natively
     const aggregateNotifications = (transactions, goals, splits) => {
@@ -67,18 +76,18 @@ const Notifications = () => {
             if (percentage >= 100) {
                 rawAlerts.push({ title: 'Goal Completed! 🎉', msg: `You hit your ${g.category} target of $${g.targetAmount.toLocaleString()}!`, time: g.createdAt, type: 'success' });
             } else if (percentage >= 80) {
-                 rawAlerts.push({ title: 'Goal Nearing Completion', msg: `Great job! You are ${percentage.toFixed(0)}% towards your ${g.category} target!`, time: g.createdAt, type: 'warn' });
+                rawAlerts.push({ title: 'Goal Nearing Completion', msg: `Great job! You are ${percentage.toFixed(0)}% towards your ${g.category} target!`, time: g.createdAt, type: 'warn' });
             } else {
-                 rawAlerts.push({ title: 'Goal Started', msg: `You initiated a ${g.category} target of $${g.targetAmount.toLocaleString()}. Keep pushing!`, time: g.createdAt, type: 'info' });
+                rawAlerts.push({ title: 'Goal Started', msg: `You initiated a ${g.category} target of $${g.targetAmount.toLocaleString()}. Keep pushing!`, time: g.createdAt, type: 'info' });
             }
         });
 
         // 3. Pending Bills (Splits) mapping uniquely finding unpaid debts!
         splits.forEach(s => {
             if (s.status === 'pending') {
-                 rawAlerts.push({ title: 'Pending Bill', msg: `Reminder: You owe $${s.pendingAmount.toFixed(2)} for ${s.description}`, time: s.createdAt, type: 'warn' });
+                rawAlerts.push({ title: 'Pending Bill', msg: `Reminder: You owe $${s.pendingAmount.toFixed(2)} for ${s.description}`, time: s.createdAt, type: 'warn' });
             } else if (s.status === 'settled') {
-                 rawAlerts.push({ title: 'Bill Settled', msg: `You permanently cleared: ${s.description}.`, time: s.createdAt, type: 'success' });
+                rawAlerts.push({ title: 'Bill Settled', msg: `You permanently cleared: ${s.description}.`, time: s.createdAt, type: 'success' });
             }
         });
 
@@ -102,6 +111,35 @@ const Notifications = () => {
         if (interval > 1) return Math.floor(interval) + "m ago";
         return "Just now";
     };
+
+    // Sub-component for the interactive toggle
+    const ToggleSwitch = ({ isOn, onToggle }) => (
+        <div
+            onClick={onToggle}
+            style={{
+                width: '36px',
+                height: '18px',
+                background: isOn ? '#7C3AED' : '#E9E5F5',
+                borderRadius: '10px',
+                padding: '2px',
+                cursor: 'pointer',
+                display: 'flex',
+                transition: 'background 0.3s ease'
+            }}
+        >
+            <motion.div
+                animate={{ x: isOn ? 18 : 0 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                style={{
+                    width: '14px',
+                    height: '14px',
+                    background: '#FFFFFF',
+                    borderRadius: '50%',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}
+            />
+        </div>
+    );
 
     return (
         <motion.div
@@ -132,7 +170,7 @@ const Notifications = () => {
                     >
                         <div className="card-header">
                             <h3 className="card-title">Database Verified Alerts</h3>
-                            <span style={{ fontSize: '12px', color: '#7C3AED' }}>Live MongoDB Sync</span>
+                            <span style={{ fontSize: '12px', color: '#7C3AED' }}>Live Sync</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '10px', maxHeight: '500px', overflowY: 'auto', paddingRight: '10px' }}>
                             {loading ? (
@@ -158,21 +196,22 @@ const Notifications = () => {
 
                     {/* Settings Quick Access */}
                     <motion.div
-                        className="bento-item"
-                        style={{ gridColumn: "span 4", gridRow: "span 2" }}
+                        className="bento-item glass-card-sleek"
+                        style={{ gridColumn: "span 4", gridRow: "span 2", padding: '20px' }}
                     >
-                        <h3 className="card-title">Alert Settings</h3>
-                        <div style={{ marginTop: '15px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <h3 className="card-title" style={{ marginBottom: '15px' }}>Alert Settings</h3>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Email Summaries</span>
-                                <div style={{ width: '30px', height: '16px', background: '#A78BFA', borderRadius: '8px' }} />
+                                <span style={{ fontSize: '14px', color: '#6B7280' }}>Email Summaries</span>
+                                <ToggleSwitch isOn={emailAlerts} onToggle={() => setEmailAlerts(!emailAlerts)} />
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <span style={{ fontSize: '13px', color: '#6B7280' }}>Push Notifications</span>
-                                <div style={{ width: '30px', height: '16px', background: '#7C3AED', borderRadius: '8px' }} />
+                                <span style={{ fontSize: '14px', color: '#6B7280' }}>Push Notifications</span>
+                                <ToggleSwitch isOn={pushAlerts} onToggle={() => setPushAlerts(!pushAlerts)} />
                             </div>
                         </div>
                     </motion.div>
+
 
                     {/* Summary Tile */}
                     <motion.div

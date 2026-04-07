@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../components/FormInput';
+import { GoogleLogin } from '@react-oauth/google';
 import './registration.css';
 
 const RegistrationPage = () => {
@@ -81,6 +82,27 @@ const RegistrationPage = () => {
         }
     };
 
+    const handleGoogleSuccess = async (credentialResponse) => {
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credential: credentialResponse.credential })
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                localStorage.setItem('token', data.token);
+                navigate('/dashboard');
+            } else {
+                setErrors({ form: data.message || "Google Login failed" });
+            }
+        } catch (err) {
+            console.error("Google Login error:", err);
+            setErrors({ form: "Google Login failed. Please try again." });
+        }
+    };
+
     return (
         <div className="register-container">
             {/* LEFT SIDE */}
@@ -118,13 +140,15 @@ const RegistrationPage = () => {
                     <p>Enter your personal data to create your account.</p>
                 </div>
 
-                <div className="social-buttons">
-                    <button className="social-btn">
-                        <span>G</span> Google
-                    </button>
-                    <button className="social-btn">
-                        <span>●</span> Github
-                    </button>
+                <div className="social-buttons" style={{ justifyContent: 'center' }}>
+                    <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={() => setErrors({ form: "Google Login Failed" })}
+                        theme="outline"
+                        size="large"
+                        shape="pill"
+                        width="100%"
+                    />
                 </div>
 
                 <div className="divider">
